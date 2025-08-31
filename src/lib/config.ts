@@ -18,19 +18,18 @@ export const STAKING_PROGRAM_ID = new PublicKey(
 
 // Token mint addresses from deployed smart contracts
 export const VIBES_MINT = new PublicKey(
-  process.env.NEXT_PUBLIC_VIBES_MINT || '84LT3VSyUEoyyt4u3D4No2fCfHnMdh7noyG2qd8FiQbo'
+  process.env.NEXT_PUBLIC_VIBES_MINT || 'G5n3KqfKZB4qeJAQA3k5dKbj7X264oCjV1vXMnBpwL43'
 );
 
 export const USDC_MINT = new PublicKey(
   process.env.NEXT_PUBLIC_USDC_MINT || '3HUzJfpyyFS4XodTRPFkGqjjGo7MHhQqJMwFu1HMkuUe'
 );
 
-// Demo mode flag - set to true to simulate transactions without real smart contracts
-// Enabled temporarily until presale is initialized
-export const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || true;
+// Demo mode flag - removed from UI but kept for backwards compatibility
+export const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || false;
 
 // Common constants
 export const LAMPORTS_PER_SOL = 1000000000;
 export const SOL_DECIMALS = 9;
 export const USDC_DECIMALS = 6;
-export const VIBES_DECIMALS = 6; // VIBES token uses 6 decimals based on smart contract migration
+export const VIBES_DECIMALS = 9; // VIBES token uses 9 decimals (standard Solana)

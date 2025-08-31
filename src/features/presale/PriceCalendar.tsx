@@ -8,22 +8,21 @@ interface PriceTier {
   month: string;
 }
 
-// Price schedule data from the smart contract
-// For demo purposes, we're using closer timestamps to show the countdown working
-const now = Math.floor(Date.now() / 1000);
+// Price schedule data from the smart contract - Real mainnet dates
+// Presale: September 1, 2025 - September 1, 2026
 const PRICE_SCHEDULE: PriceTier[] = [
-  { start_ts: now - (30 * 24 * 60 * 60), price_usd: 0.0598, month: "September 2025" },
-  { start_ts: now + (7 * 24 * 60 * 60), price_usd: 0.0658, month: "October 2025" },
-  { start_ts: now + (37 * 24 * 60 * 60), price_usd: 0.0718, month: "November 2025" },
-  { start_ts: now + (67 * 24 * 60 * 60), price_usd: 0.0777, month: "December 2025" },
-  { start_ts: now + (97 * 24 * 60 * 60), price_usd: 0.0837, month: "January 2026" },
-  { start_ts: now + (127 * 24 * 60 * 60), price_usd: 0.0897, month: "February 2026" },
-  { start_ts: now + (157 * 24 * 60 * 60), price_usd: 0.0957, month: "March 2026" },
-  { start_ts: now + (187 * 24 * 60 * 60), price_usd: 0.1017, month: "April 2026" },
-  { start_ts: now + (217 * 24 * 60 * 60), price_usd: 0.1047, month: "May 2026" },
-  { start_ts: now + (247 * 24 * 60 * 60), price_usd: 0.1077, month: "June 2026" },
-  { start_ts: now + (277 * 24 * 60 * 60), price_usd: 0.1107, month: "July 2026" },
-  { start_ts: now + (307 * 24 * 60 * 60), price_usd: 0.1137, month: "August 2026" }
+  { start_ts: 1756684800, price_usd: 0.0598, month: "September 2025" },   // Sept 1, 2025
+  { start_ts: 1759363200, price_usd: 0.0658, month: "October 2025" },    // Oct 1, 2025
+  { start_ts: 1761955200, price_usd: 0.0718, month: "November 2025" },   // Nov 1, 2025
+  { start_ts: 1764633600, price_usd: 0.0777, month: "December 2025" },   // Dec 1, 2025
+  { start_ts: 1767225600, price_usd: 0.0837, month: "January 2026" },    // Jan 1, 2026
+  { start_ts: 1769904000, price_usd: 0.0897, month: "February 2026" },   // Feb 1, 2026
+  { start_ts: 1772323200, price_usd: 0.0957, month: "March 2026" },      // Mar 1, 2026
+  { start_ts: 1775001600, price_usd: 0.1017, month: "April 2026" },      // Apr 1, 2026
+  { start_ts: 1777593600, price_usd: 0.1047, month: "May 2026" },        // May 1, 2026
+  { start_ts: 1780272000, price_usd: 0.1077, month: "June 2026" },       // Jun 1, 2026
+  { start_ts: 1782864000, price_usd: 0.1107, month: "July 2026" },       // Jul 1, 2026
+  { start_ts: 1785542400, price_usd: 0.1137, month: "August 2026" }      // Aug 1, 2026
 ];
 
 interface TimeLeft {

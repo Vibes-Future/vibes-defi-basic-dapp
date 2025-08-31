@@ -31,11 +31,22 @@ const ProductionHeader: React.FC = () => {
   }, [mobileMenuOpen]);
 
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setMobileMenuOpen(false);
-    }
+    // Close mobile menu first
+    setMobileMenuOpen(false);
+    
+    // Add a small delay to ensure menu closing animation doesn't interfere
+    setTimeout(() => {
+      const element = document.getElementById(id);
+      
+      if (element) {
+        // Use scrollIntoView with the configured scroll-padding-top
+        element.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest'
+        });
+      }
+    }, 150); // Slightly longer delay for better mobile experience
   };
 
   return (
@@ -105,22 +116,55 @@ const ProductionHeader: React.FC = () => {
         <div className="mobile-menu" onClick={(e) => e.stopPropagation()}>
           <nav className="mobile-nav">
             <button 
-              onClick={() => scrollToSection('presale')}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                scrollToSection('presale');
+              }}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                scrollToSection('presale');
+              }}
               className="mobile-nav-link"
+              type="button"
+              aria-label="Go to Presale section"
             >
               <span>💰</span>
               <span>Presale</span>
             </button>
             <button 
-              onClick={() => scrollToSection('staking')}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                scrollToSection('staking');
+              }}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                scrollToSection('staking');
+              }}
               className="mobile-nav-link"
+              type="button"
+              aria-label="Go to Staking section"
             >
               <span>🥩</span>
               <span>Staking</span>
             </button>
             <button 
-              onClick={() => scrollToSection('vesting')}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                scrollToSection('vesting');
+              }}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                scrollToSection('vesting');
+              }}
               className="mobile-nav-link"
+              type="button"
+              aria-label="Go to Vesting section"
             >
               <span>⏰</span>
               <span>Vesting</span>

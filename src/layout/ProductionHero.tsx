@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { useWallet } from '@/hooks/useWallet';
-import { DEMO_MODE } from '@/lib/config';
 
 const ProductionHero: React.FC = () => {
   const { connected } = useWallet();
@@ -45,11 +44,11 @@ const ProductionHero: React.FC = () => {
           </div>
           <div className="stat-card">
             <div className="stat-value">$0.0598</div>
-            <div className="stat-label">Presale Price</div>
+            <div className="stat-label">Starting Price</div>
           </div>
           <div className="stat-card">
-            <div className="stat-value">15M</div>
-            <div className="stat-label">Total Supply</div>
+            <div className="stat-value">Sep 2025</div>
+            <div className="stat-label">Presale Start</div>
           </div>
         </div>
 
@@ -85,7 +84,7 @@ const ProductionHero: React.FC = () => {
               <div className="status-indicator">
                 <div className="status-dot"></div>
                 <span className="status-text">
-                  {DEMO_MODE ? 'Demo Mode Active - All features available for testing' : 'All systems operational'}
+                  All systems operational
                 </span>
               </div>
             </>

@@ -416,3 +416,5 @@ export const ModernPresaleCard: React.FC = () => {
     </section>
   );
 };
+
+export default ModernPresaleCard;

@@ -88,8 +88,8 @@ const ProductionPresaleCard: React.FC = () => {
             🚀 VIBES Token Presale
           </h2>
           <p className="body-lg text-gray-300 max-w-3xl mx-auto">
-            Join the VIBES ecosystem early with exclusive presale pricing. 
-            Limited time opportunity to secure your position in the future of DeFi.
+            Join the VIBES ecosystem early with exclusive presale pricing starting September 2025. 
+            12-month presale with increasing prices each month - secure your position now!
           </p>
         </div>
 

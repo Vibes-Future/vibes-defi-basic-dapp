@@ -6,8 +6,6 @@ import { ProductionHero } from '@/layout';
 import { ProductionPresaleCard } from '@/features/presale';
 import { ModernStakingCard } from '@/features/staking';
 import { ModernVestingCard } from '@/features/vesting';
-import { StatusBanner } from '@/components/ui/StatusBanner';
-import { DEMO_MODE } from '@/lib/config';
 
 // Import styles
 import '@/styles/layout/production-layout.css';
@@ -17,7 +15,6 @@ import '@/styles/global/vibes-design-system.css';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
-  const [showBanner, setShowBanner] = useState<boolean>(DEMO_MODE);
 
   useEffect(() => {
     setIsClient(true);
@@ -36,9 +33,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-900 via-black to-green-800">
-      {/* Demo Mode Banner */}
-      {DEMO_MODE && <StatusBanner isVisible={showBanner} onClose={() => setShowBanner(false)} />}
-      
       {/* Header */}
       <ProductionHeader />
       
