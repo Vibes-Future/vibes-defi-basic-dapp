@@ -20,7 +20,7 @@ interface WalletProviderProps {
   children: ReactNode;
 }
 
-export const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
+const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
   // Use Helius RPC endpoint directly instead of public Solana RPC
   const endpoint = useMemo(() => RPC_ENDPOINT, []);
 
@@ -42,3 +42,5 @@ export const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
     </ConnectionProvider>
   );
 };
+
+export default WalletProvider;
