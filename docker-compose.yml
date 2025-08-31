@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  vibes-defi-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      # Solana Network Configuration
+      - NEXT_PUBLIC_SOLANA_NETWORK=mainnet-beta
+      - NEXT_PUBLIC_RPC_ENDPOINT=https://api.mainnet-beta.solana.com
+      
+      # VIBES Token Configuration
+      - NEXT_PUBLIC_VIBES_MINT=G5n3KqfKZB4qeJAQA3k5dKbj7X264oCjV1vXMnBpwL43
+      - NEXT_PUBLIC_VIBES_DECIMALS=9
+      
+      # Program IDs (update with your actual mainnet program IDs)
+      - NEXT_PUBLIC_PRESALE_PROGRAM_ID=your-actual-presale-program-id
+      - NEXT_PUBLIC_STAKING_PROGRAM_ID=your-actual-staking-program-id
+      - NEXT_PUBLIC_VESTING_PROGRAM_ID=your-actual-vesting-program-id
+      
+      # Application Configuration
+      - NEXT_PUBLIC_DEMO_MODE=false
+      - NEXT_PUBLIC_APP_ENV=production
+    
+    restart: unless-stopped
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Nginx proxy for production
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      # Add SSL certificates here if needed
+      # - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - vibes-defi-app
+    restart: unless-stopped
+    profiles:
+      - production

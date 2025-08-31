@@ -5,25 +5,69 @@ export const SOLANA_NETWORK = process.env.NEXT_PUBLIC_SOLANA_NETWORK || 'devnet'
 export const RPC_ENDPOINT = process.env.NEXT_PUBLIC_HELIUS_RPC_ENDPOINT || 
   'https://api.devnet.solana.com';
 
-// Smart contract program IDs
-export const PRESALE_PROGRAM_ID = new PublicKey(
-  process.env.NEXT_PUBLIC_PRESALE_PROGRAM_ID || 'GS3E6DPPkpkD6dV2vnM7LKiMghiJ4TXk1fzHFistTHQE'
-);
-export const VESTING_PROGRAM_ID = new PublicKey(
-  process.env.NEXT_PUBLIC_VESTING_PROGRAM_ID || 'HXiAcHVkxdpAkeyFtu47mRkcEF3AxjqmGV7kfcunnaLY'
-);
-export const STAKING_PROGRAM_ID = new PublicKey(
-  process.env.NEXT_PUBLIC_STAKING_PROGRAM_ID || 'HNQ66x9jd7tdghh4KyeyJbtEqBC7NDw1CyU5fiERS6DW'
-);
+// String constants for program IDs (converted to PublicKey when needed)
+export const PRESALE_PROGRAM_ID_STRING = 
+  process.env.NEXT_PUBLIC_PRESALE_PROGRAM_ID || 'GS3E6DPPkpkD6dV2vnM7LKiMghiJ4TXk1fzHFistTHQE';
+export const VESTING_PROGRAM_ID_STRING = 
+  process.env.NEXT_PUBLIC_VESTING_PROGRAM_ID || 'HXiAcHVkxdpAkeyFtu47mRkcEF3AxjqmGV7kfcunnaLY';
+export const STAKING_PROGRAM_ID_STRING = 
+  process.env.NEXT_PUBLIC_STAKING_PROGRAM_ID || 'HNQ66x9jd7tdghh4KyeyJbtEqBC7NDw1CyU5fiERS6DW';
 
-// Token mint addresses from deployed smart contracts
-export const VIBES_MINT = new PublicKey(
-  process.env.NEXT_PUBLIC_VIBES_MINT || 'G5n3KqfKZB4qeJAQA3k5dKbj7X264oCjV1vXMnBpwL43'
-);
+// Token mint address strings
+export const VIBES_MINT_STRING = 
+  process.env.NEXT_PUBLIC_VIBES_MINT || 'G5n3KqfKZB4qeJAQA3k5dKbj7X264oCjV1vXMnBpwL43';
+export const USDC_MINT_STRING = 
+  process.env.NEXT_PUBLIC_USDC_MINT || '3HUzJfpyyFS4XodTRPFkGqjjGo7MHhQqJMwFu1HMkuUe';
 
-export const USDC_MINT = new PublicKey(
-  process.env.NEXT_PUBLIC_USDC_MINT || '3HUzJfpyyFS4XodTRPFkGqjjGo7MHhQqJMwFu1HMkuUe'
-);
+// Helper functions to create PublicKeys safely (only on client side)
+export const getPresaleProgramId = () => new PublicKey(PRESALE_PROGRAM_ID_STRING);
+export const getVestingProgramId = () => new PublicKey(VESTING_PROGRAM_ID_STRING);
+export const getStakingProgramId = () => new PublicKey(STAKING_PROGRAM_ID_STRING);
+export const getVibesMint = () => new PublicKey(VIBES_MINT_STRING);
+export const getUsdcMint = () => new PublicKey(USDC_MINT_STRING);
+
+// Lazy-loaded PublicKey instances to avoid build-time issues
+let _PRESALE_PROGRAM_ID: PublicKey | null = null;
+let _VESTING_PROGRAM_ID: PublicKey | null = null;
+let _STAKING_PROGRAM_ID: PublicKey | null = null;
+let _VIBES_MINT: PublicKey | null = null;
+let _USDC_MINT: PublicKey | null = null;
+
+// Backwards compatibility exports with lazy loading
+export const PRESALE_PROGRAM_ID = new Proxy({} as PublicKey, {
+  get(target, prop) {
+    if (!_PRESALE_PROGRAM_ID) _PRESALE_PROGRAM_ID = getPresaleProgramId();
+    return (_PRESALE_PROGRAM_ID as any)[prop];
+  }
+});
+
+export const VESTING_PROGRAM_ID = new Proxy({} as PublicKey, {
+  get(target, prop) {
+    if (!_VESTING_PROGRAM_ID) _VESTING_PROGRAM_ID = getVestingProgramId();
+    return (_VESTING_PROGRAM_ID as any)[prop];
+  }
+});
+
+export const STAKING_PROGRAM_ID = new Proxy({} as PublicKey, {
+  get(target, prop) {
+    if (!_STAKING_PROGRAM_ID) _STAKING_PROGRAM_ID = getStakingProgramId();
+    return (_STAKING_PROGRAM_ID as any)[prop];
+  }
+});
+
+export const VIBES_MINT = new Proxy({} as PublicKey, {
+  get(target, prop) {
+    if (!_VIBES_MINT) _VIBES_MINT = getVibesMint();
+    return (_VIBES_MINT as any)[prop];
+  }
+});
+
+export const USDC_MINT = new Proxy({} as PublicKey, {
+  get(target, prop) {
+    if (!_USDC_MINT) _USDC_MINT = getUsdcMint();
+    return (_USDC_MINT as any)[prop];
+  }
+});
 
 // Demo mode flag - removed from UI but kept for backwards compatibility
 export const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || false;

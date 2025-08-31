@@ -1,0 +1,58 @@
+# Dependencies
+node_modules
+npm-debug.log*
+
+# Next.js build output and cache
+.next
+out
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Documentation and config
+README.md
+docs/
+*.md
+netlify.toml
+
+# Testing
+coverage/
+.nyc_output
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Deployment files
+deployment/
+scripts/deploy*

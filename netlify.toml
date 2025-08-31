@@ -5,8 +5,8 @@
   # Output directory after build (using static export)
   publish = "out"
   
-  # Node.js version
-  environment = { NODE_VERSION = "18" }
+  # Node.js version (required for Solana wallet adapters)
+  environment = { NODE_VERSION = "20" }
 
 # Redirect rules for Next.js SPA
 [[redirects]]
