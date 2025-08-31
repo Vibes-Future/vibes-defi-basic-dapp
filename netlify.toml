@@ -1,0 +1,47 @@
+[build]
+  # Build command for Next.js static export
+  command = "npm run build"
+  
+  # Output directory after build (using static export)
+  publish = "out"
+  
+  # Node.js version
+  environment = { NODE_VERSION = "18" }
+
+# Redirect rules for Next.js SPA
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Headers for security and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# Cache static assets
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Environment variables (you'll set these in Netlify dashboard)
+# NEXT_PUBLIC_SOLANA_NETWORK=mainnet
+# NEXT_PUBLIC_RPC_ENDPOINT=your-helius-rpc-endpoint
+# NEXT_PUBLIC_VIBES_MINT=G5n3KqfKZB4qeJAQA3k5dKbj7X264oCjV1vXMnBpwL43
+# NEXT_PUBLIC_DEMO_MODE=false

@@ -1,17 +1,42 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  experimental: {
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+  // Enable React strict mode for better development experience
+  reactStrictMode: true,
+  
+  // Optimize for static export (good for Netlify)
+  trailingSlash: false,
+  
+  // Image optimization configuration
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'arweave.net',
+        pathname: '/**',
       },
-    },
+    ],
+    // For static export, we need to disable image optimization
+    unoptimized: true,
   },
+  
+  // Webpack configuration for SVG handling
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack'],
+    });
+    return config;
+  },
+  
+  // Environment variables that should be available at build time
+  env: {
+    CUSTOM_KEY: 'vibes-defi-production',
+  },
+  
+  // Output configuration for static hosting
+  output: 'export',
+  distDir: 'out',
 };
 
 export default nextConfig;
