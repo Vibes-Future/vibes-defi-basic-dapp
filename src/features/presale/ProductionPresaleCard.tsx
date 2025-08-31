@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { useWallet } from '@/hooks/useWallet';
 import { PresaleService } from '@/services/presale-simple';
 import { DEMO_MODE } from '@/lib/config';
-import PriceCalendar from '@/components/presale/PriceCalendar';
+import PriceCalendar from './PriceCalendar';
 
-export const ProductionPresaleCard: React.FC = () => {
+const ProductionPresaleCard: React.FC = () => {
   const { connected, publicKeyObj } = useWallet();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('buy');
@@ -149,7 +149,7 @@ export const ProductionPresaleCard: React.FC = () => {
               <div className="card-icon">💰</div>
               <div>
                 <h3 className="card-title">Price Calendar</h3>
-                <p className="card-subtitle">Don't miss the next increase</p>
+                <p className="card-subtitle">Don&apos;t miss the next increase</p>
               </div>
             </div>
             <div className="card-content">
@@ -318,3 +318,5 @@ export const ProductionPresaleCard: React.FC = () => {
     </section>
   );
 };
+
+export default ProductionPresaleCard;

@@ -1,0 +1,502 @@
+{
+  "version": "0.1.0",
+  "name": "staking_program",
+  "instructions": [
+    {
+      "name": "initPool",
+      "docs": [
+        "Initialize the staking pool"
+      ],
+      "accounts": [
+        {
+          "name": "stakePool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "stakeMint",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "VIBES token mint for staking"
+          ]
+        },
+        {
+          "name": "rewardMint",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "VIBES token mint for rewards"
+          ]
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true,
+          "docs": [
+            "Authority that can update pool settings"
+          ]
+        },
+        {
+          "name": "stakeVaultTokenAccountPda",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Stake vault token account PDA"
+          ]
+        },
+        {
+          "name": "rewardVaultTokenAccountPda",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Reward vault token account PDA"
+          ]
+        },
+        {
+          "name": "charityWallet",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Charity wallet address (3% of rewards)"
+          ]
+        },
+        {
+          "name": "rewardWallet",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Reward funding wallet"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "apyBps",
+          "type": "u64"
+        },
+        {
+          "name": "slotsPerYear",
+          "type": "u64"
+        },
+        {
+          "name": "globalCap",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "stake",
+      "docs": [
+        "Stake VIBES tokens"
+      ],
+      "accounts": [
+        {
+          "name": "stakePool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userStake",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true,
+          "docs": [
+            "User staking tokens"
+          ]
+        },
+        {
+          "name": "userVibesAccount",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "User's VIBES token account"
+          ]
+        },
+        {
+          "name": "stakeVaultTokenAccountPda",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Stake vault token account PDA"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "unstake",
+      "docs": [
+        "Unstake VIBES tokens"
+      ],
+      "accounts": [
+        {
+          "name": "stakePool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userStake",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true,
+          "docs": [
+            "User unstaking tokens"
+          ]
+        },
+        {
+          "name": "userVibesAccount",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "User's VIBES token account"
+          ]
+        },
+        {
+          "name": "stakeVaultTokenAccountPda",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Stake vault token account PDA"
+          ]
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "claimReward",
+      "docs": [
+        "Claim rewards (97% to user, 3% to charity)"
+      ],
+      "accounts": [
+        {
+          "name": "stakePool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userStake",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true,
+          "docs": [
+            "User claiming rewards"
+          ]
+        },
+        {
+          "name": "userVibesAccount",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "User's VIBES token account for rewards"
+          ]
+        },
+        {
+          "name": "charityWallet",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Charity wallet for 3% of rewards"
+          ]
+        },
+        {
+          "name": "rewardVaultTokenAccountPda",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Reward vault token account PDA"
+          ]
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "updatePool",
+      "docs": [
+        "Update pool rewards (called before stake/unstake/claim)"
+      ],
+      "accounts": [
+        {
+          "name": "stakePool",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "StakePool",
+      "docs": [
+        "Main staking pool account"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "stakeMint",
+            "docs": [
+              "VIBES token mint for staking"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "rewardMint",
+            "docs": [
+              "VIBES token mint for rewards"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "globalCap",
+            "docs": [
+              "Global cap for total staked tokens (15,000,000 VIBES)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "apyBps",
+            "docs": [
+              "APY in basis points (4000 = 40%)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "slotsPerYear",
+            "docs": [
+              "Slots per year for reward calculation"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "accRewardPerToken",
+            "docs": [
+              "Accumulated reward per token (fixed-point 1e12)"
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "lastSlot",
+            "docs": [
+              "Last slot when rewards were updated"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "totalStaked",
+            "docs": [
+              "Total tokens currently staked"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "stakeVaultTokenAccountPda",
+            "docs": [
+              "Stake vault token account PDA"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "rewardVaultTokenAccountPda",
+            "docs": [
+              "Reward vault token account PDA"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "charityWallet",
+            "docs": [
+              "Charity wallet address (3% of rewards)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "rewardWallet",
+            "docs": [
+              "Reward funding wallet"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for PDA derivation"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UserStake",
+      "docs": [
+        "User stake account"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "docs": [
+              "Owner of the stake"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount of tokens staked"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "rewardDebt",
+            "docs": [
+              "Reward debt for accounting"
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "lastSlot",
+            "docs": [
+              "Last slot when rewards were updated"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for PDA derivation"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidApy",
+      "msg": "Invalid APY"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidSlotsPerYear",
+      "msg": "Invalid slots per year"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidGlobalCap",
+      "msg": "Invalid global cap"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidAmount",
+      "msg": "Invalid amount"
+    },
+    {
+      "code": 6004,
+      "name": "GlobalCapExceeded",
+      "msg": "Global cap exceeded"
+    },
+    {
+      "code": 6005,
+      "name": "InsufficientStake",
+      "msg": "Insufficient stake"
+    },
+    {
+      "code": 6006,
+      "name": "NoRewardsToClaim",
+      "msg": "No rewards to claim"
+    },
+    {
+      "code": 6007,
+      "name": "Overflow",
+      "msg": "Overflow occurred"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidSlotCalculation",
+      "msg": "Invalid slot calculation"
+    },
+    {
+      "code": 6009,
+      "name": "Unauthorized",
+      "msg": "Unauthorized access"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidMint",
+      "msg": "Invalid mint"
+    },
+    {
+      "code": 6011,
+      "name": "InvalidTokenAccount",
+      "msg": "Invalid token account"
+    },
+    {
+      "code": 6012,
+      "name": "PoolNotInitialized",
+      "msg": "Pool not initialized"
+    }
+  ]
+}

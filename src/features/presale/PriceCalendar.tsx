@@ -143,7 +143,7 @@ export const PriceCalendar: React.FC = () => {
         <div className="full-calendar">
           <div className="calendar-header">
             <h3>💰 Complete Price Schedule</h3>
-            <p>Lock in today's price before it increases!</p>
+            <p>Lock in today&apos;s price before it increases!</p>
           </div>
           
           <div className="calendar-grid">
@@ -176,7 +176,7 @@ export const PriceCalendar: React.FC = () => {
           
           <div className="calendar-footer">
             <div className="urgency-message">
-              🔥 <strong>Don't wait!</strong> Prices increase automatically each month.
+              🔥 <strong>Don&apos;t wait!</strong> Prices increase automatically each month.
             </div>
             {nextTier && timeLeft.days <= 3 && (
               <div className="urgent-alert">
