@@ -7,7 +7,6 @@ import {
 } from '@solana/wallet-adapter-react';
 
 import {
-  PhantomWalletAdapter,
   SolflareWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
@@ -26,7 +25,7 @@ const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
 
   const wallets = useMemo(
     () => [
-      new PhantomWalletAdapter(),
+      // Phantom is now auto-registered as Standard Wallet
       new SolflareWalletAdapter(),
     ],
     []

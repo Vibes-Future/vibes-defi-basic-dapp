@@ -207,33 +207,62 @@ const ProductionPresaleCard: React.FC = () => {
                         <div className="space-y-6">
                           <div className="form-group">
                             <label className="form-label">Payment Method</label>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="payment-method-selector">
                               <button
-                                className={`p-4 rounded-lg border-2 transition-all ${
-                                  paymentMethod === 'sol' 
-                                    ? 'border-green-500 bg-green-500/10' 
-                                    : 'border-gray-600 hover:border-gray-500'
+                                className={`payment-method-option ${
+                                  paymentMethod === 'sol' ? 'active sol-active' : ''
                                 }`}
                                 onClick={() => setPaymentMethod('sol')}
                               >
-                                <div className="text-center">
-                                  <div className="text-2xl mb-2">◎</div>
-                                  <div className="font-semibold">SOL</div>
-                                  <div className="text-sm text-gray-400">${presaleData.solPrice}</div>
+                                <div className="payment-method-content">
+                                  <div className="payment-icon sol-icon">
+                                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                      <circle cx="16" cy="16" r="15" stroke="currentColor" strokeWidth="2"/>
+                                      <path d="M8 12h16l-2-2H10l-2 2z" fill="currentColor"/>
+                                      <path d="M8 20h16l-2 2H10l-2-2z" fill="currentColor"/>
+                                      <rect x="8" y="14" width="16" height="4" fill="currentColor"/>
+                                    </svg>
+                                  </div>
+                                  <div className="payment-details">
+                                    <div className="payment-name">SOL</div>
+                                    <div className="payment-price">${presaleData.solPrice}</div>
+                                  </div>
+                                  <div className="payment-check">
+                                    {paymentMethod === 'sol' && (
+                                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                        <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill="currentColor"/>
+                                      </svg>
+                                    )}
+                                  </div>
                                 </div>
                               </button>
+                              
                               <button
-                                className={`p-4 rounded-lg border-2 transition-all ${
-                                  paymentMethod === 'usdc' 
-                                    ? 'border-blue-500 bg-blue-500/10' 
-                                    : 'border-gray-600 hover:border-gray-500'
+                                className={`payment-method-option ${
+                                  paymentMethod === 'usdc' ? 'active usdc-active' : ''
                                 }`}
                                 onClick={() => setPaymentMethod('usdc')}
                               >
-                                <div className="text-center">
-                                  <div className="text-2xl mb-2">💵</div>
-                                  <div className="font-semibold">USDC</div>
-                                  <div className="text-sm text-gray-400">$1.00</div>
+                                <div className="payment-method-content">
+                                  <div className="payment-icon usdc-icon">
+                                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                      <circle cx="16" cy="16" r="15" stroke="currentColor" strokeWidth="2" fill="currentColor"/>
+                                      <path d="M16 6c-5.522 0-10 4.478-10 10s4.478 10 10 10 10-4.478 10-10S21.522 6 16 6zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z" fill="white"/>
+                                      <path d="M16 9c-3.866 0-7 3.134-7 7s3.134 7 7 7 7-3.134 7-7-3.134-7-7-7zm0 12c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.243 5-5 5z" fill="white"/>
+                                      <path d="M15 11v2h-1v2h1v2h2v-2h1v-2h-1v-2h-2z" fill="white"/>
+                                    </svg>
+                                  </div>
+                                  <div className="payment-details">
+                                    <div className="payment-name">USDC</div>
+                                    <div className="payment-price">$1.00</div>
+                                  </div>
+                                  <div className="payment-check">
+                                    {paymentMethod === 'usdc' && (
+                                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                        <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill="currentColor"/>
+                                      </svg>
+                                    )}
+                                  </div>
                                 </div>
                               </button>
                             </div>
