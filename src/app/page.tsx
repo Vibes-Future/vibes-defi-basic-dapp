@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { ProductionHeader } from '@/layout';
 import { ProductionHero } from '@/layout';
 import { ProductionPresaleCard } from '@/features/presale';
+import { ModernStakingCard } from '@/features/staking';
+import { ModernVestingCard } from '@/features/vesting';
 import { StatusBanner } from '@/components/ui/StatusBanner';
 import { DEMO_MODE } from '@/lib/config';
 
@@ -15,6 +17,7 @@ import '@/styles/global/vibes-design-system.css';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
+  const [showBanner, setShowBanner] = useState<boolean>(DEMO_MODE);
 
   useEffect(() => {
     setIsClient(true);
@@ -34,7 +37,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-900 via-black to-green-800">
       {/* Demo Mode Banner */}
-      {DEMO_MODE && <StatusBanner />}
+      {DEMO_MODE && <StatusBanner isVisible={showBanner} onClose={() => setShowBanner(false)} />}
       
       {/* Header */}
       <ProductionHeader />
@@ -44,7 +47,40 @@ export default function Home() {
       
       {/* Main Content */}
       <main className="relative z-10">
+        {/* Presale Section */}
         <ProductionPresaleCard />
+        
+        {/* Staking Section */}
+        <section id="staking" className="section-spacing">
+          <div className="container-spacing">
+            <div className="text-center mb-12">
+              <h2 className="heading-xl text-gradient mb-6">
+                🥩 VIBES Staking
+              </h2>
+              <p className="body-lg text-gray-300 max-w-3xl mx-auto">
+                Stake your VIBES tokens and earn up to 40% APY. Help secure the network 
+                while earning passive rewards with our innovative staking protocol.
+              </p>
+            </div>
+            <ModernStakingCard />
+          </div>
+        </section>
+        
+        {/* Vesting Section */}
+        <section id="vesting" className="section-spacing">
+          <div className="container-spacing">
+            <div className="text-center mb-12">
+              <h2 className="heading-xl text-gradient mb-6">
+                ⏰ VIBES Vesting
+              </h2>
+              <p className="body-lg text-gray-300 max-w-3xl mx-auto">
+                Manage your vested VIBES tokens with our flexible vesting system. 
+                Track your unlocked tokens and claim them when available.
+              </p>
+            </div>
+            <ModernVestingCard />
+          </div>
+        </section>
       </main>
     </div>
   );

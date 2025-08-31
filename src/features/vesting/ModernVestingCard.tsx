@@ -6,7 +6,7 @@ import { useWallet } from '@/hooks/useWallet';
 import { VestingService, VestingSchedule } from '@/services/vesting';
 import { connection } from '@/lib/solana';
 
-export const ModernVestingCard: React.FC = () => {
+const ModernVestingCard: React.FC = () => {
   const { connected, publicKeyObj, signTransaction, updateBalances } = useWallet();
   const [vestingService] = useState(() => new VestingService(connection));
   
@@ -512,3 +512,5 @@ export const ModernVestingCard: React.FC = () => {
     </section>
   );
 };
+
+export default ModernVestingCard;

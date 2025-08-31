@@ -6,7 +6,7 @@ import { PresaleService } from '@/services/presale-simple';
 import { connection } from '@/lib/solana';
 import { requestAirdrop } from '@/lib/solana';
 
-export const PresaleCard: React.FC = () => {
+const PresaleCard: React.FC = () => {
   const { connected, publicKeyObj, signTransaction, updateBalances, solBalance, usdcBalance } = useWallet();
   const [presaleService] = useState(() => new PresaleService(connection));
   
@@ -339,3 +339,5 @@ export const PresaleCard: React.FC = () => {
     </div>
   );
 };
+
+export default PresaleCard;

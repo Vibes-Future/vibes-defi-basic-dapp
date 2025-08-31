@@ -5,7 +5,7 @@ import { useWallet } from '@/hooks/useWallet';
 import { StakingService, UserStake, StakePool } from '@/services/staking';
 import { connection } from '@/lib/solana';
 
-export const ModernStakingCard: React.FC = () => {
+const ModernStakingCard: React.FC = () => {
   const { connected, publicKeyObj, signTransaction, updateBalances, vibesBalance } = useWallet();
   const [stakingService] = useState(() => new StakingService(connection));
   
@@ -452,3 +452,5 @@ export const ModernStakingCard: React.FC = () => {
     </section>
   );
 };
+
+export default ModernStakingCard;

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { WalletButton } from '../WalletButton';
+import { WalletButton } from '@/features/wallet';
 
 export const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
