@@ -6,10 +6,10 @@
 @tailwind utilities;
 
 /* Import Production Styles */
-@import '../styles/vibes-design-system.css';
-@import '../styles/production-layout.css';
-@import '../styles/production-cards.css';
-@import '../styles/production-wallet.css';
+@import '../styles/global/vibes-design-system.css';
+@import '../styles/layout/production-layout.css';
+@import '../styles/features/production-cards.css';
+@import '../styles/features/production-wallet.css';
 
 /* Global Production Overrides */
 html {

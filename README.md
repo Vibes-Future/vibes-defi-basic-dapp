@@ -1,148 +1,120 @@
-# VIBES DeFi - Basic DApp
+# VIBES DeFi - Complete DeFi Ecosystem
 
-A basic Web3 decentralized application (DApp) for VIBES DeFi ecosystem built on Solana blockchain.
+A comprehensive decentralized finance (DeFi) application built on Solana, featuring presale, staking, and vesting mechanisms for the VIBES token ecosystem.
 
-## Features
+## 🚀 Quick Start
 
-### 🚀 Token Presale
-- **Dual Payment Methods**: Buy VIBES tokens with SOL or USDC
-- **Dynamic Pricing**: Tiered pricing structure based on raised amounts
-- **Real-time Calculations**: Live token amount calculations
-- **Devnet Testing**: Built-in SOL airdrop for testing
+```bash
+# Install dependencies
+npm install
 
-### 📈 Staking Pool
-- **High APY**: Earn 40% annual percentage yield
-- **Social Impact**: 3% of rewards automatically donated to charity
-- **Flexible Staking**: Stake and unstake at any time
-- **Real-time Rewards**: Live reward calculation and claiming
+# Run development server
+npm run dev
 
-### ⏰ Vesting Schedule
-- **Cliff & Linear Vesting**: 1-year cliff + 3-month linear release
-- **Smart Timing**: 40% after cliff, then 20% monthly
-- **Self-Managed**: Users control their own vesting claims
-- **Progress Tracking**: Visual progress indicators
+# Build for production
+npm run build
 
-## Smart Contracts (Devnet)
+# Start production server
+npm start
+```
 
-- **Presale Program**: `GS3E6DPPkpkD6dV2vnM7LKiMghiJ4TXk1fzHFistTHQE`
-- **Staking Program**: `HNQ66x9jd7tdghh4KyeyJbtEqBC7NDw1CyU5fiERS6DW`
-- **Vesting Program**: `HXiAcHVkxdpAkeyFtu47mRkcEF3AxjqmGV7kfcunnaLY`
+## 🏗️ Architecture
 
-## Token Addresses (Devnet)
+### Core Features
+- **Token Presale**: 12-month presale with tiered pricing (Sept 2025 - Aug 2026)
+- **Staking System**: 40% APY with reward distribution and charity allocation
+- **Vesting Protocol**: Cliff-based token release (40% at listing, 20% each 30 days)
+- **Mobile-First Design**: Responsive UI with optimized touch interactions
 
-- **VIBES Mint**: `84LT3VSyUEoyyt4u3D4No2fCfHnMdh7noyG2qd8FiQbo`
-- **USDC Mint**: `3HUzJfpyyFS4XodTRPFkGqjjGo7MHhQqJMwFu1HMkuUe`
+### Tech Stack
+- **Frontend**: Next.js 15, React 18, TypeScript
+- **Styling**: Tailwind CSS, Custom CSS modules
+- **Blockchain**: Solana Web3.js, Wallet Adapter
+- **Build**: Turbopack (Next.js 15)
 
-## Getting Started
+## 📊 Token Information
 
-### Prerequisites
+- **Token**: VIBES
+- **Contract**: `G5n3KqfKZB4qeJAQA3k5dKbj7X264oCjV1vXMnBpwL43`
+- **Decimals**: 9 (Solana standard)
+- **Network**: Solana
 
-- Node.js 18+ and npm
-- Solana wallet (Phantom, Solflare, etc.)
-- Some Devnet SOL (available via airdrop in the app)
+## 💰 Presale Schedule
 
-### Installation
+| Month | Price (USD) | Start Date |
+|-------|-------------|------------|
+| September 2025 | $0.0598 | Sept 1, 2025 |
+| October 2025 | $0.0658 | Oct 1, 2025 |
+| November 2025 | $0.0718 | Nov 1, 2025 |
+| ... | ... | ... |
+| August 2026 | $0.1137 | Aug 1, 2026 |
 
-1. **Clone and install dependencies:**
-   ```bash
-   git clone <your-repo>
-   cd vibes-defi-basic-dapp
-   npm install
-   ```
+## 🛠️ Development
 
-2. **Set up environment:**
-   ```bash
-   cp env.example .env
-   ```
+### Environment Setup
 
-3. **Start development server:**
-   ```bash
-   npm run dev
-   ```
+1. Copy environment variables:
+```bash
+cp env.example .env.local
+```
 
-4. **Open application:**
-   Navigate to `http://localhost:3000`
+2. Configure your environment variables in `.env.local`
 
-### Usage
-
-1. **Connect Wallet**: Click the wallet button to connect your Solana wallet
-2. **Get Test SOL**: Use the airdrop button to get 2 SOL for testing
-3. **Buy VIBES**: Purchase tokens using SOL or USDC in the presale
-4. **Stake Tokens**: Earn rewards by staking your VIBES tokens
-5. **Create Vesting**: Set up time-locked token releases
-
-## Architecture
-
-### Frontend
-- **Framework**: Next.js 14 with TypeScript
-- **Styling**: Tailwind CSS (basic HTML in this version)
-- **Wallet Integration**: Solana Wallet Adapter
-- **State Management**: React Hooks + Custom Store
-
-### Blockchain Integration
-- **Network**: Solana Devnet
-- **RPC**: Helius RPC (better performance and reliability)
-- **Smart Contract Interaction**: Custom service classes
-- **Transaction Handling**: Web3.js with Anchor framework
-
-### Key Components
+### Project Structure
 
 ```
 src/
-├── components/          # UI components
-│   ├── WalletProvider.tsx    # Wallet connection provider
-│   ├── WalletButton.tsx      # Wallet connection button
-│   ├── PresaleCard.tsx       # Presale interface
-│   ├── StakingCard.tsx       # Staking interface
-│   └── VestingCard.tsx       # Vesting interface
-├── services/           # Blockchain interaction services
-│   ├── presale.ts           # Presale contract service
-│   ├── staking.ts           # Staking contract service
-│   └── vesting.ts           # Vesting contract service
-├── hooks/              # Custom React hooks
-│   └── useWallet.ts         # Wallet state management
-└── lib/                # Utility libraries
-    ├── config.ts            # Configuration constants
-    └── solana.ts            # Solana connection utilities
+├── app/                 # Next.js App Router
+├── features/           # Feature-based components
+│   ├── presale/        # Presale functionality
+│   ├── staking/        # Staking system
+│   ├── vesting/        # Vesting protocol
+│   └── wallet/         # Wallet integration
+├── layout/             # Layout components
+├── lib/                # Utilities and configuration
+├── services/           # Blockchain services
+└── styles/             # Organized CSS modules
 ```
 
-## Important Notes
+## 🔧 Smart Contracts
 
-⚠️ **This is a basic testing version with the following limitations:**
+### Devnet Program IDs
+- **Presale**: `GS3E6DPPkpkD6dV2vnM7LKiMghiJ4TXk1fzHFistTHQE`
+- **Vesting**: `HXiAcHVkxdpAkeyFtu47mRkcEF3AxjqmGV7kfcunnaLY`
+- **Staking**: `HNQ66x9jd7tdghh4KyeyJbtEqBC7NDw1CyU5fiERS6DW`
 
-1. **Simplified Contract Integration**: Uses manual instruction building instead of proper IDL
-2. **Mock Data**: Some contract state is mocked for demonstration
-3. **Devnet Only**: Built for testing on Solana Devnet
-4. **Basic UI**: Focuses on functionality over aesthetics
-5. **No Error Handling**: Minimal error recovery mechanisms
+## 📱 Features
 
-## Next Steps
+### Presale
+- SOL and USDC payment methods
+- Real-time price calculation
+- Monthly price tier progression
+- Purchase history tracking
 
-For production deployment, consider:
+### Staking
+- 40% APY rewards
+- Global cap of 15M VIBES
+- Automatic reward distribution
+- 3% charity allocation
 
-1. **Proper IDL Integration**: Use generated IDL files for type safety
-2. **Account Deserialization**: Implement proper Borsh deserialization
-3. **Enhanced UI/UX**: Implement modern, responsive design
-4. **Error Handling**: Add comprehensive error handling and recovery
-5. **Security Audits**: Conduct thorough security reviews
-6. **Performance Optimization**: Implement caching and optimization
-7. **Mobile Support**: Add responsive mobile interface
-8. **Analytics Integration**: Add usage tracking and monitoring
+### Vesting
+- Cliff-based vesting schedule
+- 40% at token listing
+- 20% released every 30 days (3 additional releases)
+- Secure token distribution
 
-## Contributing
+## 🚀 Deployment
 
-This is a demonstration project. For production use, please:
+Ready for mainnet deployment with:
+- Production-optimized build
+- Professional UI/UX
+- Real business logic implementation
+- Mobile-responsive design
 
-1. Review and test all smart contract interactions
-2. Implement proper error handling
-3. Add comprehensive testing suite
-4. Follow security best practices
-5. Conduct professional security audits
+## 📄 License
 
-## License
+Private project - All rights reserved
 
-MIT License - see LICENSE file for details
+---
 
-## Disclaimer
-
-This software is provided for educational and testing purposes only. Use at your own risk. Always conduct proper due diligence before deploying to mainnet or handling real funds.
+Built with ❤️ for the VIBES community
