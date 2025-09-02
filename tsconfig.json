@@ -39,13 +39,10 @@
         "./styles/*"
       ],
       "@/services/*": [
-        "./services/*"
+        "./packages/services/*"
       ],
       "@/contracts/*": [
         "./packages/contracts/*"
-      ],
-      "@/ui/*": [
-        "./packages/ui/*"
       ]
     },
     "target": "ES2017"
