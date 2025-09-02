@@ -5,7 +5,17 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: process.cwd(),
   
   // Output configuration for production
-  output: 'standalone',
+  // Use export for Netlify, standalone for Docker
+  output: process.env.NETLIFY ? 'export' : 'standalone',
+  
+  // For static export on Netlify
+  ...(process.env.NETLIFY && {
+    distDir: 'out',
+    trailingSlash: true,
+    images: {
+      unoptimized: true
+    }
+  }),
   
   // Webpack configuration
   webpack: (config, { isServer }) => {
@@ -26,16 +36,20 @@ const nextConfig: NextConfig = {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
   
-  // Redirects and rewrites
-  async redirects() {
-    return []
-  },
+  // Redirects and rewrites (only for non-static builds)
+  ...(!process.env.NETLIFY && {
+    async redirects() {
+      return []
+    }
+  }),
   
-  // Image optimization
-  images: {
-    domains: [],
-    formats: ['image/webp', 'image/avif'],
-  },
+  // Image optimization (only if not already set by NETLIFY config)
+  ...(!process.env.NETLIFY && {
+    images: {
+      domains: [],
+      formats: ['image/webp', 'image/avif'],
+    }
+  }),
   
   // TypeScript configuration
   typescript: {
