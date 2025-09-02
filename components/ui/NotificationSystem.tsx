@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 
 // Notification types and interfaces
@@ -107,8 +107,17 @@ const NotificationItem = ({
 // Notification Container
 const NotificationContainer = () => {
   const { notifications, removeNotification } = useNotifications();
+  const [isMounted, setIsMounted] = useState(false);
 
-  if (typeof window === 'undefined') return null;
+  // Only render on client side to avoid hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Don't render anything during SSR or before mounting
+  if (!isMounted || typeof window === 'undefined') {
+    return null;
+  }
 
   return createPortal(
     <div className="notification-container">
