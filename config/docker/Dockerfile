@@ -44,7 +44,6 @@ COPY components/ ./components/
 COPY lib/ ./lib/
 COPY hooks/ ./hooks/
 COPY styles/ ./styles/
-COPY services/ ./services/
 COPY packages/ ./packages/
 COPY public/ ./public/
 

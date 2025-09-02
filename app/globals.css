@@ -10,6 +10,7 @@
 @import '../styles/layout/production-layout.css';
 @import '../styles/features/production-cards.css';
 @import '../styles/features/production-wallet.css';
+@import '../styles/features/notification-system.css';
 
 /* Global Production Overrides */
 html {

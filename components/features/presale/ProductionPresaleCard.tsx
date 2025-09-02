@@ -5,10 +5,12 @@ import { Connection } from '@solana/web3.js';
 import { useWallet } from '@/hooks/useWallet';
 import { PresaleService } from '@/services/presale-simple';
 import { DEMO_MODE, RPC_ENDPOINT } from '@/lib/config';
+import { useNotifications, showNotification } from '@/components/ui/NotificationSystem';
 import PriceCalendar from './PriceCalendar';
 
 const ProductionPresaleCard: React.FC = () => {
   const { connected, publicKeyObj, signTransaction } = useWallet();
+  const { addNotification } = useNotifications();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('buy');
   const [paymentMethod, setPaymentMethod] = useState('sol');
@@ -208,7 +210,11 @@ const ProductionPresaleCard: React.FC = () => {
       if (DEMO_MODE) {
         // Simulate transaction
         await new Promise(resolve => setTimeout(resolve, 2000));
-        alert(`✅ Demo transaction successful! You would receive ${calculateVibesAmount()} VIBES tokens.`);
+        addNotification(showNotification.success(
+          'Transaction Successful!',
+          `You received ${calculateVibesAmount()} VIBES tokens`,
+          6000
+        ));
       } else {
         // Real transaction logic
         console.log('🚀 Initiating real purchase transaction...');
@@ -233,14 +239,22 @@ const ProductionPresaleCard: React.FC = () => {
         }
         
         if (signature) {
-          alert(`✅ Transaction successful! You received ${calculateVibesAmount()} VIBES tokens.\nTransaction: ${signature.slice(0, 8)}...`);
+          addNotification(showNotification.success(
+            'Transaction Successful!',
+            `You received ${calculateVibesAmount()} VIBES tokens. Transaction: ${signature.slice(0, 8)}...`,
+            8000
+          ));
         } else {
           throw new Error('Transaction failed - no signature returned');
         }
       }
     } catch (error) {
       console.error('Purchase error:', error);
-      alert(`❌ Transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      addNotification(showNotification.error(
+        'Transaction Failed',
+        error instanceof Error ? error.message : 'Unknown error occurred',
+        8000
+      ));
     } finally {
       setLoading(false);
       setAmount('');

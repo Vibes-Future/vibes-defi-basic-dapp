@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import "@/styles/global/vibes-design-system.css";
 import WalletProvider from "@/components/features/wallet/WalletProvider";
+import { NotificationProvider } from "@/components/ui/NotificationSystem";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,9 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <WalletProvider>
-          {children}
-        </WalletProvider>
+        <NotificationProvider>
+          <WalletProvider>
+            {children}
+          </WalletProvider>
+        </NotificationProvider>
       </body>
     </html>
   );
