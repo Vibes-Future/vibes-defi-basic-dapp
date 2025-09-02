@@ -2,20 +2,23 @@ import { PublicKey } from '@solana/web3.js';
 
 // Network configuration
 export const SOLANA_NETWORK = process.env.NEXT_PUBLIC_SOLANA_NETWORK || 'devnet';
-export const RPC_ENDPOINT = process.env.NEXT_PUBLIC_HELIUS_RPC_ENDPOINT || 
-  'https://api.devnet.solana.com';
+export const RPC_ENDPOINT = process.env.NEXT_PUBLIC_RPC_ENDPOINT || 
+  process.env.NEXT_PUBLIC_HELIUS_RPC_ENDPOINT || 
+  'https://devnet.helius-rpc.com/?api-key=your-api-key';
 
 // String constants for program IDs (converted to PublicKey when needed)
+// Updated with deployed devnet addresses from keypairs.json
 export const PRESALE_PROGRAM_ID_STRING = 
-  process.env.NEXT_PUBLIC_PRESALE_PROGRAM_ID || 'GS3E6DPPkpkD6dV2vnM7LKiMghiJ4TXk1fzHFistTHQE';
+  process.env.NEXT_PUBLIC_PRESALE_PROGRAM_ID || '6Bofmx11CpBEy6iXqGs68HVHaZHw9Y3U1TYRYUhRA2wk';
 export const VESTING_PROGRAM_ID_STRING = 
   process.env.NEXT_PUBLIC_VESTING_PROGRAM_ID || 'HXiAcHVkxdpAkeyFtu47mRkcEF3AxjqmGV7kfcunnaLY';
 export const STAKING_PROGRAM_ID_STRING = 
   process.env.NEXT_PUBLIC_STAKING_PROGRAM_ID || 'HNQ66x9jd7tdghh4KyeyJbtEqBC7NDw1CyU5fiERS6DW';
 
 // Token mint address strings
+// Updated with deployed devnet addresses from keypairs.json
 export const VIBES_MINT_STRING = 
-  process.env.NEXT_PUBLIC_VIBES_MINT || 'G5n3KqfKZB4qeJAQA3k5dKbj7X264oCjV1vXMnBpwL43';
+  process.env.NEXT_PUBLIC_VIBES_MINT || '84LT3VSyUEoyyt4u3D4No2fCfHnMdh7noyG2qd8FiQbo';
 export const USDC_MINT_STRING = 
   process.env.NEXT_PUBLIC_USDC_MINT || '3HUzJfpyyFS4XodTRPFkGqjjGo7MHhQqJMwFu1HMkuUe';
 

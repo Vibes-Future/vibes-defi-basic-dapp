@@ -70,12 +70,7 @@ const ProductionHeader: React.FC = () => {
             >
               Presale
             </button>
-            <button 
-              onClick={() => scrollToSection('staking')}
-              className="nav-link"
-            >
-              Staking
-            </button>
+
             <button 
               onClick={() => scrollToSection('vesting')}
               className="nav-link"
@@ -133,24 +128,7 @@ const ProductionHeader: React.FC = () => {
               <span>💰</span>
               <span>Presale</span>
             </button>
-            <button 
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                scrollToSection('staking');
-              }}
-              onTouchEnd={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                scrollToSection('staking');
-              }}
-              className="mobile-nav-link"
-              type="button"
-              aria-label="Go to Staking section"
-            >
-              <span>🥩</span>
-              <span>Staking</span>
-            </button>
+
             <button 
               onClick={(e) => {
                 e.preventDefault();

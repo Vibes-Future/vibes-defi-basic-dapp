@@ -4,7 +4,6 @@ npm-debug.log*
 
 # Next.js build output and cache
 .next
-out
 
 # Environment files
 .env

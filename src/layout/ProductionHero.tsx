@@ -72,20 +72,6 @@ const ProductionHero: React.FC = () => {
                   <span>🚀</span>
                   Join Presale
                 </button>
-                <button 
-                  onClick={() => scrollToSection('staking')}
-                  className="btn-secondary"
-                >
-                  <span>📈</span>
-                  Start Staking
-                </button>
-              </div>
-
-              <div className="status-indicator">
-                <div className="status-dot"></div>
-                <span className="status-text">
-                  All systems operational
-                </span>
               </div>
             </>
           )}

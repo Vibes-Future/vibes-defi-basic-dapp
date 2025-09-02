@@ -3,25 +3,20 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        # Pass environment variables as build arguments
+        NEXT_PUBLIC_SOLANA_NETWORK: devnet
+        NEXT_PUBLIC_RPC_ENDPOINT: https://devnet.helius-rpc.com/?api-key=10bdc822-0b46-4952-98fc-095c326565d7
+        NEXT_PUBLIC_VIBES_MINT: 84LT3VSyUEoyyt4u3D4No2fCfHnMdh7noyG2qd8FiQbo
+        NEXT_PUBLIC_VIBES_DECIMALS: 9
+        NEXT_PUBLIC_USDC_MINT: 3HUzJfpyyFS4XodTRPFkGqjjGo7MHhQqJMwFu1HMkuUe
+        NEXT_PUBLIC_PRESALE_PROGRAM_ID: 6Bofmx11CpBEy6iXqGs68HVHaZHw9Y3U1TYRYUhRA2wk
+        NEXT_PUBLIC_STAKING_PROGRAM_ID: HNQ66x9jd7tdghh4KyeyJbtEqBC7NDw1CyU5fiERS6DW
+        NEXT_PUBLIC_VESTING_PROGRAM_ID: HXiAcHVkxdpAkeyFtu47mRkcEF3AxjqmGV7kfcunnaLY
+        NEXT_PUBLIC_DEMO_MODE: false
+        NEXT_PUBLIC_APP_ENV: development
     ports:
       - "3000:3000"
-    environment:
-      # Solana Network Configuration
-      - NEXT_PUBLIC_SOLANA_NETWORK=mainnet-beta
-      - NEXT_PUBLIC_RPC_ENDPOINT=https://api.mainnet-beta.solana.com
-      
-      # VIBES Token Configuration
-      - NEXT_PUBLIC_VIBES_MINT=G5n3KqfKZB4qeJAQA3k5dKbj7X264oCjV1vXMnBpwL43
-      - NEXT_PUBLIC_VIBES_DECIMALS=9
-      
-      # Program IDs (update with your actual mainnet program IDs)
-      - NEXT_PUBLIC_PRESALE_PROGRAM_ID=your-actual-presale-program-id
-      - NEXT_PUBLIC_STAKING_PROGRAM_ID=your-actual-staking-program-id
-      - NEXT_PUBLIC_VESTING_PROGRAM_ID=your-actual-vesting-program-id
-      
-      # Application Configuration
-      - NEXT_PUBLIC_DEMO_MODE=false
-      - NEXT_PUBLIC_APP_ENV=production
     
     restart: unless-stopped
     

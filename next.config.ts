@@ -34,9 +34,8 @@ const nextConfig: NextConfig = {
     CUSTOM_KEY: 'vibes-defi-production',
   },
   
-  // Output configuration for static hosting
-  output: 'export',
-  distDir: 'out',
+  // Output configuration for Docker deployment
+  output: 'standalone',
 };
 
 export default nextConfig;

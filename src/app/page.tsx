@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { ProductionHeader } from '@/layout';
 import { ProductionHero } from '@/layout';
 import { ProductionPresaleCard } from '@/features/presale';
-import { ModernStakingCard } from '@/features/staking';
 import { ModernVestingCard } from '@/features/vesting';
 
 // Import styles
@@ -44,30 +43,16 @@ export default function Home() {
         {/* Presale Section */}
         <ProductionPresaleCard />
         
-        {/* Staking Section */}
-        <section id="staking" className="section-spacing">
-          <div className="container-spacing">
-            <div className="text-center mb-12">
-              <h2 className="heading-xl text-gradient mb-6">
-                🥩 VIBES Staking
-              </h2>
-              <p className="body-lg text-gray-300 max-w-3xl mx-auto">
-                Stake your VIBES tokens and earn up to 40% APY. Help secure the network 
-                while earning passive rewards with our innovative staking protocol.
-              </p>
-            </div>
-            <ModernStakingCard />
-          </div>
-        </section>
+
         
         {/* Vesting Section */}
         <section id="vesting" className="section-spacing">
           <div className="container-spacing">
-            <div className="text-center mb-12">
-              <h2 className="heading-xl text-gradient mb-6">
+            <div className="text-center mb-32">
+              <h2 className="heading-xl text-gradient mb-8">
                 ⏰ VIBES Vesting
               </h2>
-              <p className="body-lg text-gray-300 max-w-3xl mx-auto">
+              <p className="body-lg text-gray-300 max-w-3xl mx-auto mb-16">
                 Manage your vested VIBES tokens with our flexible vesting system. 
                 Track your unlocked tokens and claim them when available.
               </p>

@@ -128,10 +128,14 @@ export class PresaleService {
       const accountInfo = await this.connection.getAccountInfo(presalePDA);
       
       if (!accountInfo) {
-        console.log('Presale state not found - this is normal if presale is not initialized yet');
-        // Return mock data for demo purposes
+        console.log('❌ Presale state not found at PDA:', presalePDA.toString());
+        console.log('🔍 Expected PDA from keypairs.json: 7eNN8j92e3wBUUWTowTcZDBU72Hv56VLtpgafHQgcHST');
+        console.log('🔍 Calculated PDA:', presalePDA.toString());
+        console.log('📋 Program ID:', PRESALE_PROGRAM_ID.toString());
+        
+        // Return mock data to allow frontend to work while debugging
         return {
-          authority: new PublicKey('824Fqqt99SJbyd2mLERNPuoxXSXUAyN8Sefbwn3Vsatu'),
+          authority: new PublicKey('DsdeSisDE3djpMJdjDeaUH26giPxdcF3FqEJzdjf9Uwq'), // Real authority from keypairs.json
           tokenMint: VIBES_MINT!,
           usdcMint: USDC_MINT!,
           priceSchedule: [
@@ -144,8 +148,8 @@ export class PresaleService {
           raisedUsdc: 0,
           solVaultPda: this.getSolVaultPDA(presalePDA)[0],
           usdcVaultTokenAccountPda: this.getUsdcVaultPDA(presalePDA)[0],
-          liquiditySolWallet: new PublicKey('11111111111111111111111111111111'),
-          liquidityUsdcWallet: new PublicKey('11111111111111111111111111111111'),
+          liquiditySolWallet: new PublicKey('CXDPqBqDfodrvvvUDHVXBBahYpGx1WwbZHzeaDrQfWyM'), // Real liquidity wallets from keypairs.json
+          liquidityUsdcWallet: new PublicKey('FTZP2Wxev5m4nayY3Atre3H1diHf6Sk45T53jdMhsCsS'),
           bump: 255,
           isFinalized: false,
         };

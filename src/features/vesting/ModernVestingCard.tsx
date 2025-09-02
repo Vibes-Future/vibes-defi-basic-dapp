@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { useWallet } from '@/hooks/useWallet';
 import { VestingService, VestingSchedule } from '@/services/vesting';
+import { PresaleService } from '@/services/presale-simple';
 import { connection } from '@/lib/solana';
-import { DEMO_MODE } from '@/lib/config';
+import { DEMO_MODE, RPC_ENDPOINT } from '@/lib/config';
+import { Connection } from '@solana/web3.js';
 
 const ModernVestingCard: React.FC = () => {
   const { connected, publicKeyObj } = useWallet();
@@ -22,7 +24,12 @@ const ModernVestingCard: React.FC = () => {
     progressPercent: 25,
     monthlyRelease: 416.67,
     cliffEnded: true,
-    totalSchedules: 2
+    totalSchedules: 2,
+    // Additional properties for anticipated vesting
+    immediateRelease: 0,
+    isAnticipated: false,
+    purchasedAmount: 0,
+    estimatedRewards: 0
   });
 
   useEffect(() => {
@@ -40,16 +47,151 @@ const ModernVestingCard: React.FC = () => {
         progressPercent: 25,
         monthlyRelease: 416.67,
         cliffEnded: true,
-        totalSchedules: 2
+        totalSchedules: 2,
+        immediateRelease: 2000,
+        isAnticipated: false,
+        purchasedAmount: 3000,
+        estimatedRewards: 2000
       });
       return;
     }
 
     try {
-      // Real vesting data loading would go here
       // Load actual vesting data from smart contract
+      if (!publicKeyObj) return;
+      
+      const vestingService = new VestingService(connection);
+      const schedule = await vestingService.getVestingSchedule(publicKeyObj);
+      
+      if (schedule) {
+        // Calculate claimable amount (12-month linear vesting)
+        const now = Date.now() / 1000;
+        const vestingDuration = 12 * 30 * 24 * 60 * 60; // 12 months in seconds
+        const elapsedTime = Math.max(0, now - schedule.listingTs);
+        const vestingProgress = Math.min(1, elapsedTime / vestingDuration);
+        
+        const totalVestable = schedule.totalAmount / 1_000_000; // Convert from lamports to VIBES
+        const vestedAmount = totalVestable * vestingProgress;
+        const claimedAmount = schedule.claimedAmount / 1_000_000;
+        const claimableNow = Math.max(0, vestedAmount - claimedAmount);
+        
+        // Calculate next unlock (monthly releases)
+        const monthlyRelease = totalVestable / 12;
+        const nextUnlockTime = schedule.listingTs + Math.ceil(elapsedTime / (30 * 24 * 60 * 60)) * 30 * 24 * 60 * 60;
+        
+        setVestingData({
+          totalLocked: totalVestable,
+          totalClaimed: claimedAmount,
+          claimableNow: claimableNow,
+          nextUnlock: new Date(nextUnlockTime * 1000),
+          progressPercent: Math.round(vestingProgress * 100),
+          monthlyRelease: monthlyRelease,
+          cliffEnded: elapsedTime > 0,
+          totalSchedules: 1,
+          immediateRelease: 0, // Real vesting doesn't have immediate release concept
+          isAnticipated: false, // This is real vesting data
+          purchasedAmount: 0,
+          estimatedRewards: 0
+        });
+      } else {
+        // No vesting schedule found - Show anticipated vesting based on presale purchases
+        try {
+          const rpcConnection = new Connection(RPC_ENDPOINT);
+          const presaleService = new PresaleService(rpcConnection);
+          const buyerState = await presaleService.getBuyerState(publicKeyObj);
+          
+          if (buyerState && buyerState.totalPurchasedVibes > 0) {
+            // Calculate anticipated vesting amounts
+            const totalPurchased = buyerState.totalPurchasedVibes;
+            
+            // Calculate estimated pending rewards (simplified calculation)
+            // This would normally use the calculatePendingRewards function from PresaleService
+            const timeNow = Date.now() / 1000;
+            const timeSinceLastUpdate = Math.max(0, timeNow - buyerState.lastUpdateTs);
+            const secondsInYear = 365 * 24 * 60 * 60;
+            const apyRate = 0.40; // 40% APY
+            const estimatedPendingRewards = (totalPurchased * apyRate * timeSinceLastUpdate) / secondsInYear;
+            
+            const totalAccumulatedRewards = buyerState.accumulatedRewards + estimatedPendingRewards;
+            const totalForVesting = totalPurchased + totalAccumulatedRewards; // Total that will go to vesting
+            
+            // Vesting schedule: 40% immediate, 60% over 12 months
+            const immediateRelease = totalForVesting * 0.4; // 40% on listing
+            const vestedAmount = totalForVesting * 0.6; // 60% to be vested
+            const monthlyRelease = vestedAmount / 12; // Monthly release over 12 months
+            
+            // Estimated listing date (for demo purposes - could be configurable)
+            const estimatedListingDate = new Date();
+            estimatedListingDate.setMonth(estimatedListingDate.getMonth() + 2); // Assume 2 months from now
+            
+            setVestingData({
+              totalLocked: totalForVesting, // Total that will be locked (purchased + rewards)
+              totalClaimed: 0, // Nothing claimed yet
+              claimableNow: 0, // Nothing claimable during presale
+              nextUnlock: estimatedListingDate, // Estimated listing date
+              progressPercent: 0, // 0% until listing
+              monthlyRelease: monthlyRelease,
+              cliffEnded: false, // Cliff hasn't started yet
+              totalSchedules: 1,
+              // Additional info for display
+              immediateRelease: immediateRelease,
+              isAnticipated: true, // Flag to show this is anticipated data
+              purchasedAmount: totalPurchased,
+              estimatedRewards: totalAccumulatedRewards
+            });
+          } else {
+            // No presale purchases either
+            setVestingData({
+              totalLocked: 0,
+              totalClaimed: 0,
+              claimableNow: 0,
+              nextUnlock: new Date(),
+              progressPercent: 0,
+              monthlyRelease: 0,
+              cliffEnded: false,
+              totalSchedules: 0,
+              immediateRelease: 0,
+              isAnticipated: false,
+              purchasedAmount: 0,
+              estimatedRewards: 0
+            });
+          }
+        } catch (presaleError) {
+          console.error('Error loading presale data for vesting anticipation:', presaleError);
+          // Fallback to zero values
+          setVestingData({
+            totalLocked: 0,
+            totalClaimed: 0,
+            claimableNow: 0,
+            nextUnlock: new Date(),
+            progressPercent: 0,
+            monthlyRelease: 0,
+            cliffEnded: false,
+            totalSchedules: 0,
+            immediateRelease: 0,
+            isAnticipated: false,
+            purchasedAmount: 0,
+            estimatedRewards: 0
+          });
+        }
+      }
     } catch (error) {
       console.error('Error loading vesting data:', error);
+      // Fallback to zero values on error
+      setVestingData({
+        totalLocked: 0,
+        totalClaimed: 0,
+        claimableNow: 0,
+        nextUnlock: new Date(),
+        progressPercent: 0,
+        monthlyRelease: 0,
+        cliffEnded: false,
+        totalSchedules: 0,
+        immediateRelease: 0,
+        isAnticipated: false,
+        purchasedAmount: 0,
+        estimatedRewards: 0
+      });
     }
   };
 
@@ -65,7 +207,17 @@ const ModernVestingCard: React.FC = () => {
           claimableNow: 0
         }));
       } else {
-        // Real claiming logic would go here
+        // Real claiming logic would require wallet signing integration
+        if (!publicKeyObj) throw new Error('Wallet not connected');
+        
+        // For now, just show that claiming is not yet implemented in production
+        console.log('Claiming functionality will be implemented when needed');
+        
+        // The transaction would need proper wallet integration for signing
+        // await vestingService.claim(publicKeyObj, signTransaction);
+        
+        // Reload data after claiming
+        await loadVestingData();
       }
     } catch (error) {
       console.error('Claim error:', error);
@@ -99,9 +251,25 @@ const ModernVestingCard: React.FC = () => {
   };
 
   const formatNumber = (num: number, decimals: number = 2) => {
+    // For very large numbers, use abbreviated format
+    if (num >= 1_000_000_000) {
+      return (num / 1_000_000_000).toFixed(1) + 'B';
+    } else if (num >= 1_000_000) {
+      return (num / 1_000_000).toFixed(1) + 'M';
+    } else if (num >= 1_000) {
+      return (num / 1_000).toFixed(1) + 'K';
+    }
+    
     return new Intl.NumberFormat('en-US', {
       minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals
+      maximumFractionDigits: decimals,
+    }).format(num);
+  };
+
+  const formatNumberFull = (num: number, decimals: number = 0) => {
+    return new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
     }).format(num);
   };
 
@@ -114,57 +282,97 @@ const ModernVestingCard: React.FC = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 max-w-7xl mx-auto">
-      {/* Vesting Overview */}
+    <div className="max-w-2xl mx-auto">
+      {/* Simplified Your Dashboard */}
       <div className="production-card">
         <div className="card-header">
-          <div className="card-icon">⏰</div>
+          <div className="card-icon">💎</div>
           <div>
-            <h3 className="card-title">Vesting Overview</h3>
-            <p className="card-subtitle">Track your locked tokens</p>
+            <h3 className="card-title">Your Dashboard</h3>
+            <p className="card-subtitle">Track your presale activity and vesting schedule</p>
           </div>
         </div>
         <div className="card-content">
-          <div className="grid grid-cols-1 gap-4 mb-6">
-            <div className="stat-item">
-              <div className="stat-label">Total Locked</div>
-              <div className="stat-value">{formatNumber(vestingData.totalLocked, 0)} VIBES</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-label">Already Claimed</div>
-              <div className="stat-value text-green-400">{formatNumber(vestingData.totalClaimed, 0)} VIBES</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-label">Vesting Progress</div>
-              <div className="stat-value">{vestingData.progressPercent}%</div>
-            </div>
-          </div>
+          
+          {!DEMO_MODE && vestingData.isAnticipated && vestingData.purchasedAmount > 0 ? (
+            // Real data from presale
+            <div className="vesting-dashboard">
+              {/* Key Stats */}
+              <div className="dashboard-stats">
+                <div className="stat-row">
+                  <div className="stat-info">
+                    <span className="stat-icon">🛒</span>
+                    <div>
+                      <div className="stat-label">Presale Purchases</div>
+                      <div className="stat-value">{formatNumber(vestingData.purchasedAmount, 0)} VIBES</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="stat-row">
+                  <div className="stat-info">
+                    <span className="stat-icon">⚡</span>
+                    <div>
+                      <div className="stat-label">Staking Rewards Earned</div>
+                      <div className="stat-value text-green-400">{formatNumber(vestingData.estimatedRewards, 0)} VIBES</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-          {/* Progress Bar */}
-          <div className="vesting-progress mb-4">
-            <div className="progress-header">
-              <span className="text-sm text-gray-300">Unlocked</span>
-              <span className="text-sm text-gray-300">{vestingData.progressPercent}%</span>
-            </div>
-            <div className="progress-bar">
-              <div 
-                className="progress-fill" 
-                style={{ width: `${vestingData.progressPercent}%` }}
-              ></div>
-            </div>
-          </div>
+              {/* Withdrawal Schedule */}
+              <div className="withdrawal-schedule">
+                <h4 className="schedule-title">💰 Withdrawal Schedule</h4>
+                
+                <div className="withdrawal-item">
+                  <div className="withdrawal-percent">40%</div>
+                  <div className="withdrawal-details">
+                    <div className="withdrawal-label">First Withdrawal</div>
+                    <div className="withdrawal-amount">{formatNumber(vestingData.immediateRelease, 0)} VIBES</div>
+                    <div className="withdrawal-when">Available at token listing</div>
+                  </div>
+                </div>
+                
+                <div className="withdrawal-item">
+                  <div className="withdrawal-percent">60%</div>
+                  <div className="withdrawal-details">
+                    <div className="withdrawal-label">Monthly Withdrawals</div>
+                    <div className="withdrawal-amount">{formatNumber(vestingData.monthlyRelease, 0)} VIBES/month</div>
+                    <div className="withdrawal-when">12 monthly releases after listing</div>
+                  </div>
+                </div>
+              </div>
 
-          {DEMO_MODE && (
+              {/* Next Milestone */}
+              <div className="next-milestone">
+                <div className="milestone-icon">🗓️</div>
+                <div className="milestone-content">
+                  <div className="milestone-label">Next Milestone</div>
+                  <div className="milestone-text">Token listing - estimated {formatDate(vestingData.nextUnlock)}</div>
+                </div>
+              </div>
+            </div>
+          ) : !DEMO_MODE ? (
+            // No presale activity
+            <div className="empty-state">
+              <div className="empty-icon">📦</div>
+              <h4 className="empty-title">No Presale Activity</h4>
+              <p className="empty-message">Purchase tokens during presale to see your vesting schedule here.</p>
+            </div>
+          ) : (
+            // Demo mode
             <div className="demo-notice">
               <span className="demo-badge">DEMO</span>
-              <span>Simulated vesting data for testing</span>
+              <span>Connect wallet to see real vesting data</span>
             </div>
           )}
+
         </div>
       </div>
 
-      {/* Claimable Tokens */}
-      <div className="production-card">
+      {/* Claimable Tokens - Only shown in demo mode */}
+      {DEMO_MODE && (
+        <div className="production-card">
         <div className="card-header">
           <div className="card-icon">💎</div>
           <div>
@@ -215,9 +423,11 @@ const ModernVestingCard: React.FC = () => {
           )}
         </div>
       </div>
+      )}
 
-      {/* Vesting Management */}
-      <div className="lg:col-span-2 xl:col-span-1 production-card">
+      {/* Vesting Management - Hidden during presale */}
+      {DEMO_MODE && (
+        <div className="lg:col-span-2 xl:col-span-1 production-card">
         <div className="card-header">
           <div className="card-icon">⚙️</div>
           <div>
@@ -386,6 +596,7 @@ const ModernVestingCard: React.FC = () => {
           )}
         </div>
       </div>
+      )}
     </div>
   );
 };

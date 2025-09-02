@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { Connection } from '@solana/web3.js';
 import { useWallet } from '@/hooks/useWallet';
 import { StakingService, UserStake, StakePool } from '@/services/staking';
-import { connection } from '@/lib/solana';
-import { DEMO_MODE } from '@/lib/config';
+import { PresaleService } from '@/services/presale-simple';
+import { DEMO_MODE, RPC_ENDPOINT } from '@/lib/config';
 
 const ModernStakingCard: React.FC = () => {
   const { connected, publicKeyObj } = useWallet();
@@ -24,10 +25,22 @@ const ModernStakingCard: React.FC = () => {
 
   useEffect(() => {
     loadStakingData();
-  }, [connected]);
+  }, [connected, publicKeyObj]);
+
+  // Auto-refresh staking data every 30 seconds to show real-time rewards
+  useEffect(() => {
+    if (!connected || !publicKeyObj || DEMO_MODE) return;
+
+    const interval = setInterval(() => {
+      console.log('🔄 Auto-refreshing staking data...');
+      loadStakingData();
+    }, 30000); // Update every 30 seconds
+
+    return () => clearInterval(interval);
+  }, [connected, publicKeyObj]);
 
   const loadStakingData = async () => {
-    if (DEMO_MODE || !connected) {
+    if (DEMO_MODE || !connected || !publicKeyObj) {
       // Demo data for UI showcase
       setStakingData({
         availableVibes: 1000,
@@ -41,10 +54,50 @@ const ModernStakingCard: React.FC = () => {
     }
 
     try {
-      // Real staking data loading would go here
-      // Load actual staking data from smart contract
+      console.log('🔄 Loading real staking data from presale contract...');
+      
+      // Create connection and presale service
+      const connection = new Connection(RPC_ENDPOINT);
+      const presaleService = new PresaleService(connection);
+      
+      // Get staking dashboard data from presale auto-staking
+      const dashboardData = await presaleService.getStakingDashboard(publicKeyObj);
+      
+      if (dashboardData) {
+        console.log('📊 Real staking data loaded:', dashboardData);
+        console.log('📈 Global stats:', dashboardData.globalStats);
+        
+        setStakingData({
+          availableVibes: 0, // During presale, tokens are auto-staked
+          stakedAmount: dashboardData.stakedTokens,
+          pendingRewards: dashboardData.pendingRewards,
+          apy: dashboardData.apyRate,
+          totalStaked: dashboardData.globalStats.totalStaked,
+          totalStakers: dashboardData.globalStats.totalStakers
+        });
+      } else {
+        // No staking data found - user hasn't bought any tokens yet
+        console.log('❌ No staking data found for user');
+        setStakingData({
+          availableVibes: 0,
+          stakedAmount: 0,
+          pendingRewards: 0,
+          apy: 40,
+          totalStaked: 0,
+          totalStakers: 0
+        });
+      }
     } catch (error) {
       console.error('Error loading staking data:', error);
+      // Fallback to zero data on error (real data unavailable)
+      setStakingData({
+        availableVibes: 0,
+        stakedAmount: 0,
+        pendingRewards: 0,
+        apy: 40,
+        totalStaked: 0,
+        totalStakers: 0
+      });
     }
   };
 
@@ -155,17 +208,23 @@ const ModernStakingCard: React.FC = () => {
             </div>
           </div>
 
-          {DEMO_MODE && (
+          {DEMO_MODE ? (
             <div className="demo-notice">
               <span className="demo-badge">DEMO</span>
               <span>Simulated staking data for testing</span>
+            </div>
+          ) : (
+            <div className="info-box">
+              <span className="info-badge">AUTO-STAKING</span>
+              <span>Presale tokens are automatically staked at 40% APY</span>
             </div>
           )}
         </div>
       </div>
 
-      {/* Your Staking Dashboard */}
-      <div className="production-card">
+      {/* Your Staking Dashboard - Hidden during presale */}
+      {DEMO_MODE && (
+        <div className="production-card">
         <div className="card-header">
           <div className="card-icon">💎</div>
           <div>
@@ -207,6 +266,7 @@ const ModernStakingCard: React.FC = () => {
           )}
         </div>
       </div>
+      )}
 
       {/* Staking Interface */}
       <div className="lg:col-span-2 xl:col-span-1 production-card">
@@ -218,24 +278,46 @@ const ModernStakingCard: React.FC = () => {
           </div>
         </div>
         <div className="card-content">
-          {/* Tab Navigation */}
-          <div className="tab-navigation mb-6">
-            <button
-              onClick={() => setActiveTab('stake')}
-              className={`tab-button ${activeTab === 'stake' ? 'active' : ''}`}
-            >
-              🔒 Stake
-            </button>
-            <button
-              onClick={() => setActiveTab('unstake')}
-              className={`tab-button ${activeTab === 'unstake' ? 'active' : ''}`}
-            >
-              🔓 Unstake
-            </button>
-          </div>
+          {DEMO_MODE ? (
+            <>
+              {/* Tab Navigation - Demo Mode */}
+              <div className="tab-navigation mb-6">
+                <button
+                  onClick={() => setActiveTab('stake')}
+                  className={`tab-button ${activeTab === 'stake' ? 'active' : ''}`}
+                >
+                  🔒 Stake
+                </button>
+                <button
+                  onClick={() => setActiveTab('unstake')}
+                  className={`tab-button ${activeTab === 'unstake' ? 'active' : ''}`}
+                >
+                  🔓 Unstake
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Presale Active - Manual Staking Disabled */}
+              <div className="presale-staking-disabled">
+                <div className="disabled-section">
+                  <div className="disabled-icon">🔒</div>
+                  <h4 className="disabled-title">Manual Staking Temporarily Disabled</h4>
+                  <p className="disabled-message">
+                    Manual staking and unstaking will be available after the presale ends. 
+                    All tokens purchased during presale are automatically staked at 40% APY.
+                  </p>
+                  <div className="presale-status">
+                    <span className="status-badge">PRESALE ACTIVE</span>
+                    <span className="status-text">Auto-staking enabled</span>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
 
-          {/* Stake Tab */}
-          {activeTab === 'stake' && (
+          {/* Stake Tab - Only in Demo Mode */}
+          {DEMO_MODE && activeTab === 'stake' && (
             <div className="staking-form">
               <div className="form-group mb-4">
                 <label className="form-label">Amount to Stake</label>
@@ -305,8 +387,8 @@ const ModernStakingCard: React.FC = () => {
             </div>
           )}
 
-          {/* Unstake Tab */}
-          {activeTab === 'unstake' && (
+          {/* Unstake Tab - Only in Demo Mode */}
+          {DEMO_MODE && activeTab === 'unstake' && (
             <div className="staking-form">
               <div className="form-group mb-4">
                 <label className="form-label">Amount to Unstake</label>
@@ -385,10 +467,18 @@ const ModernStakingCard: React.FC = () => {
             </div>
           )}
 
-          {!connected && (
+          {!connected ? (
             <div className="connect-prompt">
               <p className="text-center text-gray-400">
                 Connect your wallet to start staking and earning rewards
+              </p>
+            </div>
+          ) : !DEMO_MODE && (
+            <div className="info-box">
+              <p className="text-center text-gray-300">
+                <strong>💡 Presale Auto-Staking Active</strong><br/>
+                Tokens purchased during presale are automatically staked at 40% APY. 
+                Manual staking will be available after presale ends.
               </p>
             </div>
           )}

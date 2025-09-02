@@ -1309,3 +1309,470 @@
     height: 24px;
   }
 }
+
+/* Presale Staking Disabled Section */
+.presale-staking-disabled {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  padding: 40px 20px;
+}
+
+.disabled-section {
+  text-align: center;
+  max-width: 400px;
+  background: rgba(255, 193, 7, 0.05);
+  border: 2px dashed rgba(255, 193, 7, 0.3);
+  border-radius: 16px;
+  padding: 32px 24px;
+}
+
+.disabled-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.7;
+}
+
+.disabled-title {
+  color: #ffc107;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.disabled-message {
+  color: #e0e0e0;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.presale-status {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.status-badge {
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  color: #000;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-text {
+  color: #b0b0b0;
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* Dark mode compatibility */
+@media (prefers-color-scheme: dark) {
+  .disabled-section {
+    background: rgba(255, 193, 7, 0.08);
+    border-color: rgba(255, 193, 7, 0.4);
+  }
+  
+  .disabled-message {
+    color: #cccccc;
+  }
+  
+  .status-text {
+    color: #999999;
+  }
+}
+
+/* Enhanced Anticipated Vesting Styles */
+.anticipated-vesting-section {
+  background: linear-gradient(135deg, rgba(199, 248, 1, 0.08) 0%, rgba(199, 248, 1, 0.03) 100%);
+  border: 1px solid rgba(199, 248, 1, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.anticipated-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.anticipated-icon {
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(199, 248, 1, 0.1);
+  border-radius: 12px;
+}
+
+.anticipated-title {
+  color: #c7f801;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.anticipated-subtitle {
+  color: #b0b0b0;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Summary Cards Grid */
+.vesting-summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.summary-card {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+  cursor: help;
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.summary-card.primary {
+  border-color: rgba(199, 248, 1, 0.3);
+  background: rgba(199, 248, 1, 0.05);
+}
+
+.summary-card.secondary {
+  border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.summary-label {
+  color: #888;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.summary-value {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.summary-unit {
+  color: #c7f801;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Vesting Breakdown */
+.vesting-breakdown {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.breakdown-title {
+  color: #c7f801;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.breakdown-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.breakdown-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: help;
+}
+
+.breakdown-item:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.breakdown-item.immediate {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.2);
+}
+
+.breakdown-item.monthly {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.breakdown-icon {
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.breakdown-content {
+  flex: 1;
+}
+
+.breakdown-label {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.breakdown-amount {
+  color: #c7f801;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.breakdown-desc {
+  color: #888;
+  font-size: 12px;
+}
+
+/* Simplified Vesting Dashboard Styles */
+.vesting-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dashboard-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  border: 1px solid rgba(199, 248, 1, 0.1);
+}
+
+.stat-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.stat-icon {
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(199, 248, 1, 0.1);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.stat-label {
+  color: #888;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.stat-value {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+/* Withdrawal Schedule */
+.withdrawal-schedule {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(199, 248, 1, 0.1);
+}
+
+.schedule-title {
+  color: #c7f801;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.withdrawal-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.withdrawal-item:last-child {
+  margin-bottom: 0;
+}
+
+.withdrawal-percent {
+  background: linear-gradient(135deg, #c7f801 0%, #a0d600 100%);
+  color: #000;
+  font-size: 18px;
+  font-weight: 800;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.withdrawal-details {
+  flex: 1;
+}
+
+.withdrawal-label {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.withdrawal-amount {
+  color: #c7f801;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.withdrawal-when {
+  color: #888;
+  font-size: 12px;
+}
+
+/* Next Milestone */
+.next-milestone {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(199, 248, 1, 0.1) 0%, rgba(199, 248, 1, 0.05) 100%);
+  border: 1px solid rgba(199, 248, 1, 0.3);
+  border-radius: 12px;
+}
+
+.milestone-icon {
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(199, 248, 1, 0.2);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.milestone-label {
+  color: #c7f801;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.milestone-text {
+  color: #ffffff;
+  font-size: 14px;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.empty-title {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.empty-message {
+  color: #888;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .withdrawal-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  
+  .withdrawal-percent {
+    width: 60px;
+    height: 60px;
+    font-size: 20px;
+  }
+  
+  .stat-row {
+    padding: 12px;
+  }
+  
+  .stat-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+  }
+  
+  .stat-value {
+    font-size: 16px;
+  }
+}
