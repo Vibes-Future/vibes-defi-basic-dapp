@@ -10,9 +10,6 @@
     "docker:build": "docker-compose -f config/docker/docker-compose.yml build",
     "docker:up": "docker-compose -f config/docker/docker-compose.yml up",
     "docker:down": "docker-compose -f config/docker/docker-compose.yml down",
-    "docker:build-v2": "docker-compose -f config/docker/docker-compose-v2.yml build",
-    "docker:up-v2": "docker-compose -f config/docker/docker-compose-v2.yml up",
-    "docker:down-v2": "docker-compose -f config/docker/docker-compose-v2.yml down",
     "deploy": "scripts/deployment/deploy.sh"
   },
   "dependencies": {
