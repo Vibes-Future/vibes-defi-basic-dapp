@@ -60,3 +60,5 @@ After deployment, test:
 - ✅ Payment selector (SOL/USDC)
 - ✅ Mobile responsiveness
 - ✅ All navigation links
+
+
