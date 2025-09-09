@@ -1,0 +1,96 @@
+# Production-optimized Dockerfile for VIBES DeFi Server Deployment
+FROM node:20-alpine AS base
+
+# Install curl for health checks
+RUN apk add --no-cache curl
+
+# Install dependencies only when needed
+FROM base AS deps
+WORKDIR /app
+
+# Install build dependencies for native modules
+RUN apk add --no-cache libc6-compat python3 make g++
+
+# Copy package files
+COPY package*.json ./
+RUN npm ci --only=production && npm cache clean --force
+
+# Rebuild the source code only when needed
+FROM base AS builder
+WORKDIR /app
+
+# Install build dependencies for native modules
+RUN apk add --no-cache libc6-compat python3 make g++
+
+# Copy dependencies and source code
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Set production environment for build
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Accept build arguments for environment variables
+ARG NEXT_PUBLIC_SOLANA_NETWORK
+ARG NEXT_PUBLIC_HELIUS_RPC_ENDPOINT
+ARG NEXT_PUBLIC_VIBES_MINT
+ARG NEXT_PUBLIC_VIBES_DECIMALS
+ARG NEXT_PUBLIC_USDC_MINT
+ARG NEXT_PUBLIC_PRESALE_PROGRAM_ID
+ARG NEXT_PUBLIC_STAKING_PROGRAM_ID
+ARG NEXT_PUBLIC_VESTING_PROGRAM_ID
+ARG NEXT_PUBLIC_DEMO_MODE
+ARG NEXT_PUBLIC_APP_ENV
+
+# Set environment variables from build arguments
+ENV NEXT_PUBLIC_SOLANA_NETWORK=$NEXT_PUBLIC_SOLANA_NETWORK
+ENV NEXT_PUBLIC_HELIUS_RPC_ENDPOINT=$NEXT_PUBLIC_HELIUS_RPC_ENDPOINT
+ENV NEXT_PUBLIC_VIBES_MINT=$NEXT_PUBLIC_VIBES_MINT
+ENV NEXT_PUBLIC_VIBES_DECIMALS=$NEXT_PUBLIC_VIBES_DECIMALS
+ENV NEXT_PUBLIC_USDC_MINT=$NEXT_PUBLIC_USDC_MINT
+ENV NEXT_PUBLIC_PRESALE_PROGRAM_ID=$NEXT_PUBLIC_PRESALE_PROGRAM_ID
+ENV NEXT_PUBLIC_STAKING_PROGRAM_ID=$NEXT_PUBLIC_STAKING_PROGRAM_ID
+ENV NEXT_PUBLIC_VESTING_PROGRAM_ID=$NEXT_PUBLIC_VESTING_PROGRAM_ID
+ENV NEXT_PUBLIC_DEMO_MODE=$NEXT_PUBLIC_DEMO_MODE
+ENV NEXT_PUBLIC_APP_ENV=$NEXT_PUBLIC_APP_ENV
+
+# Build the application with standalone output
+RUN npm run build
+
+# Production image, copy all the files and run next
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Create system user for security
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Copy the built application
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+
+# Create health check script
+RUN echo '#!/bin/sh\ncurl -f http://localhost:3000/health || curl -f http://localhost:3000 || exit 1' > /app/healthcheck.sh && \
+    chmod +x /app/healthcheck.sh
+
+# Set proper permissions
+RUN chown -R nextjs:nodejs /app
+USER nextjs
+
+# Expose port 3000 (internal container port)
+EXPOSE 3000
+
+# Set environment variables for runtime
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD /app/healthcheck.sh
+
+# Start the application
+CMD ["node", "server.js"]

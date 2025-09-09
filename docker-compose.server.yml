@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  vibes-defi-production:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+      args:
+        # Production environment variables for Devnet
+        NEXT_PUBLIC_SOLANA_NETWORK: devnet
+        NEXT_PUBLIC_HELIUS_RPC_ENDPOINT: https://devnet.helius-rpc.com/?api-key=10bdc822-0b46-4952-98fc-095c326565d7
+        NEXT_PUBLIC_VIBES_MINT: 3PpEoHtqRBTvWopXp37m3TUid3fPhTMhC8fid82xHPY6
+        NEXT_PUBLIC_VIBES_DECIMALS: 6
+        NEXT_PUBLIC_USDC_MINT: ANzKJEL57EUNiqkeWExXoMEG78AN5kcxB4c1hUshNJmy
+        NEXT_PUBLIC_PRESALE_PROGRAM_ID: GEHYySidFB8XWXkPFBrnfgqEhoA8sGeMZooUouqZuP7S
+        NEXT_PUBLIC_STAKING_PROGRAM_ID: FPhhnGDDLECMQYzcZrxqq5GKCcECmhuLeEepy3mCE5TX
+        NEXT_PUBLIC_VESTING_PROGRAM_ID: 37QayjEeVsvBJfoUwgpWCLyon5zbMyPqg4iLDLzjwYyk
+        NEXT_PUBLIC_DEMO_MODE: false
+        NEXT_PUBLIC_APP_ENV: production
+    ports:
+      - "3002:3000"  # External port 3002 maps to container port 3000
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SOLANA_NETWORK=devnet
+      - NEXT_PUBLIC_APP_ENV=production
+      - NEXT_PUBLIC_DEMO_MODE=false
+    restart: unless-stopped
+    container_name: vibes-defi-production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - vibes-network
+
+networks:
+  vibes-network:
+    driver: bridge
+
+volumes:
+  app_data:
