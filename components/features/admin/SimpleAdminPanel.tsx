@@ -21,7 +21,7 @@ export const SimpleAdminPanel: React.FC = () => {
     try {
       // Get presale PDA
       const [presalePDA] = PublicKey.findProgramAddressSync(
-        [Buffer.from('presale')],
+        [Buffer.from('presale_state')],
         PRESALE_PROGRAM_ID
       );
 

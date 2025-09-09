@@ -1,0 +1,47 @@
+services:
+  vibes-defi-app:
+    build:
+      context: ../../
+      dockerfile: config/docker/Dockerfile
+      args:
+        # Pass environment variables as build arguments
+        NEXT_PUBLIC_SOLANA_NETWORK: devnet
+        NEXT_PUBLIC_RPC_ENDPOINT: https://devnet.helius-rpc.com/?api-key=10bdc822-0b46-4952-98fc-095c326565d7
+        NEXT_PUBLIC_VIBES_MINT: 84LT3VSyUEoyyt4u3D4No2fCfHnMdh7noyG2qd8FiQbo
+        NEXT_PUBLIC_VIBES_DECIMALS: 9
+        NEXT_PUBLIC_USDC_MINT: 3HUzJfpyyFS4XodTRPFkGqjjGo7MHhQqJMwFu1HMkuUe
+        NEXT_PUBLIC_PRESALE_PROGRAM_ID: 6Bofmx11CpBEy6iXqGs68HVHaZHw9Y3U1TYRYUhRA2wk
+        NEXT_PUBLIC_STAKING_PROGRAM_ID: HNQ66x9jd7tdghh4KyeyJbtEqBC7NDw1CyU5fiERS6DW
+        NEXT_PUBLIC_VESTING_PROGRAM_ID: HXiAcHVkxdpAkeyFtu47mRkcEF3AxjqmGV7kfcunnaLY
+        NEXT_PUBLIC_DEMO_MODE: false
+        NEXT_PUBLIC_APP_ENV: development
+    ports:
+      - "3000:3000"
+    
+    restart: unless-stopped
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Nginx proxy for production
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      # Add SSL certificates here if needed
+      # - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - vibes-defi-app
+    restart: unless-stopped
+    profiles:
+      - production
+
+

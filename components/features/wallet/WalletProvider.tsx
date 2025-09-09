@@ -7,7 +7,10 @@ import {
 } from '@solana/wallet-adapter-react';
 
 import {
+  PhantomWalletAdapter,
   SolflareWalletAdapter,
+  TorusWalletAdapter,
+  LedgerWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { RPC_ENDPOINT } from '@/lib/config';
@@ -25,16 +28,41 @@ const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
 
   const wallets = useMemo(
     () => [
-      // Phantom is now auto-registered as Standard Wallet
+      // Popular Solana wallets in order of popularity
+      new PhantomWalletAdapter(),
       new SolflareWalletAdapter(),
+      new TorusWalletAdapter(),
+      new LedgerWalletAdapter(),
     ],
     []
   );
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <BaseWalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>
+      <BaseWalletProvider 
+        wallets={wallets} 
+        autoConnect={true}
+        onError={(error) => {
+          // Suppress common wallet extension errors
+          if (error.message.includes('message channel closed') || 
+              error.message.includes('listener indicated an asynchronous response')) {
+            console.log('Wallet extension communication error (safe to ignore):', error.message);
+            return;
+          }
+          // Log other wallet errors for debugging
+          console.error('Wallet connection error:', error);
+          console.error('Error details:', {
+            name: error.name,
+            message: error.message,
+            stack: error.stack
+          });
+        }}
+      >
+        <WalletModalProvider
+          features={{
+            'mobile-wallet-adapter': true,
+          }}
+        >
           {children}
         </WalletModalProvider>
       </BaseWalletProvider>

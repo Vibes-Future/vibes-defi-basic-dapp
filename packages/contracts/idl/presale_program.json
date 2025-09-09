@@ -1,0 +1,636 @@
+{
+  "version": "0.1.0",
+  "name": "presale_program",
+  "instructions": [
+    {
+      "name": "initPresale",
+      "docs": [
+        "Initialize presale with basic parameters"
+      ],
+      "accounts": [
+        {
+          "name": "presaleState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "presaleVault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "treasurySol",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "treasuryUsdc",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "secondarySol",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "secondaryUsdc",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "feeCollectorSol",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "feeCollectorUsdc",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "startTs",
+          "type": "i64"
+        },
+        {
+          "name": "endTs",
+          "type": "i64"
+        },
+        {
+          "name": "hardCap",
+          "type": "u64"
+        },
+        {
+          "name": "maxPerWallet",
+          "type": "u64"
+        },
+        {
+          "name": "minSolPurchase",
+          "type": "u64"
+        },
+        {
+          "name": "feeRateBps",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "buyWithSol",
+      "docs": [
+        "Buy tokens with SOL"
+      ],
+      "accounts": [
+        {
+          "name": "presaleState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "buyerState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "solAmount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "buyWithUsdc",
+      "docs": [
+        "Buy tokens with USDC"
+      ],
+      "accounts": [
+        {
+          "name": "presaleState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "buyerState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "usdcAmount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "optIntoStaking",
+      "docs": [
+        "Opt into staking"
+      ],
+      "accounts": [
+        {
+          "name": "buyerState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "claimTokens",
+      "docs": [
+        "Claim tokens (after presale ends)"
+      ],
+      "accounts": [
+        {
+          "name": "presaleState",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "buyerState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "PresaleState",
+      "docs": [
+        "Simple presale state for functional testing"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Authority that can update presale settings"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "tokenMint",
+            "docs": [
+              "VIBES token mint"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "startTs",
+            "docs": [
+              "Presale start timestamp"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "endTs",
+            "docs": [
+              "Presale end timestamp"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "hardCapTotal",
+            "docs": [
+              "Total hard cap in VIBES tokens"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "maxPurchasePerWallet",
+            "docs": [
+              "Maximum VIBES tokens per wallet"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "minPurchaseSol",
+            "docs": [
+              "Minimum SOL purchase amount"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "feeRateBps",
+            "docs": [
+              "Fee rate in basis points (50 = 0.5%)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "totalSold",
+            "docs": [
+              "Total VIBES sold"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "totalRaisedSol",
+            "docs": [
+              "Total SOL raised"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "totalRaisedUsdc",
+            "docs": [
+              "Total USDC raised"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "presaleTokenVault",
+            "docs": [
+              "Presale token vault"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "treasurySolWallet",
+            "docs": [
+              "Treasury wallets (80%)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "treasuryUsdcWallet",
+            "type": "publicKey"
+          },
+          {
+            "name": "secondarySolWallet",
+            "docs": [
+              "Secondary wallets (20%)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "secondaryUsdcWallet",
+            "type": "publicKey"
+          },
+          {
+            "name": "feeCollectorSol",
+            "docs": [
+              "Fee collector wallets"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "feeCollectorUsdc",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BuyerState",
+      "docs": [
+        "Buyer state for individual users"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "docs": [
+              "User's public key"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "totalPurchased",
+            "docs": [
+              "Total VIBES purchased"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "totalSolSpent",
+            "docs": [
+              "Total SOL spent"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "totalUsdcSpent",
+            "docs": [
+              "Total USDC spent"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "stakingAmount",
+            "docs": [
+              "Amount opted for staking"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "isStaking",
+            "docs": [
+              "Whether user is staking"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "firstPurchaseTs",
+            "docs": [
+              "Timestamp when user first purchased"
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "PresaleNotActive",
+      "msg": "Presale is not currently active"
+    },
+    {
+      "code": 6001,
+      "name": "PresaleNotStarted",
+      "msg": "Presale has not started yet"
+    },
+    {
+      "code": 6002,
+      "name": "PresaleEnded",
+      "msg": "Presale has ended"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidAmount",
+      "msg": "Invalid amount provided"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidPriceCalculation",
+      "msg": "Invalid price calculation"
+    },
+    {
+      "code": 6005,
+      "name": "HardCapExceeded",
+      "msg": "Hard cap exceeded"
+    },
+    {
+      "code": 6006,
+      "name": "ExceedsMaxPurchase",
+      "msg": "Exceeds maximum purchase per wallet"
+    },
+    {
+      "code": 6007,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidStartTime",
+      "msg": "Invalid start time"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidEndTime",
+      "msg": "Invalid end time"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidHardCap",
+      "msg": "Invalid hard cap"
+    },
+    {
+      "code": 6011,
+      "name": "InvalidPriceSchedule",
+      "msg": "Invalid price schedule"
+    },
+    {
+      "code": 6012,
+      "name": "TooManyPriceTiers",
+      "msg": "Too many price tiers"
+    },
+    {
+      "code": 6013,
+      "name": "InsufficientFunds",
+      "msg": "Insufficient funds"
+    },
+    {
+      "code": 6014,
+      "name": "InsufficientBalance",
+      "msg": "Insufficient balance"
+    },
+    {
+      "code": 6015,
+      "name": "NothingToClaim",
+      "msg": "Nothing to claim"
+    },
+    {
+      "code": 6016,
+      "name": "InvalidTreasuryWallet",
+      "msg": "Invalid treasury wallet"
+    },
+    {
+      "code": 6017,
+      "name": "InvalidSecondaryWallet",
+      "msg": "Invalid secondary wallet"
+    },
+    {
+      "code": 6018,
+      "name": "InvalidFeeCollector",
+      "msg": "Invalid fee collector"
+    },
+    {
+      "code": 6019,
+      "name": "FeeTooHigh",
+      "msg": "Fee rate too high"
+    },
+    {
+      "code": 6020,
+      "name": "InvalidUsdcMint",
+      "msg": "Invalid USDC mint"
+    },
+    {
+      "code": 6021,
+      "name": "InvalidTokenMint",
+      "msg": "Invalid token mint"
+    },
+    {
+      "code": 6022,
+      "name": "InvalidTokenAccount",
+      "msg": "Invalid token account"
+    },
+    {
+      "code": 6023,
+      "name": "InvalidVaultAuthority",
+      "msg": "Invalid vault authority"
+    },
+    {
+      "code": 6024,
+      "name": "InvalidBuyer",
+      "msg": "Invalid buyer"
+    },
+    {
+      "code": 6025,
+      "name": "InvalidLaunchTime",
+      "msg": "Invalid launch time"
+    },
+    {
+      "code": 6026,
+      "name": "InvalidStakingApy",
+      "msg": "Invalid staking APY"
+    },
+    {
+      "code": 6027,
+      "name": "StakingNotAvailable",
+      "msg": "Staking is not available yet"
+    },
+    {
+      "code": 6028,
+      "name": "InsufficientTokensToStake",
+      "msg": "Insufficient tokens to stake"
+    },
+    {
+      "code": 6029,
+      "name": "NoTokensToStake",
+      "msg": "No tokens to stake"
+    },
+    {
+      "code": 6030,
+      "name": "InsufficientStakedTokens",
+      "msg": "Insufficient staked tokens"
+    },
+    {
+      "code": 6031,
+      "name": "NoStakedTokens",
+      "msg": "No staked tokens"
+    },
+    {
+      "code": 6032,
+      "name": "PresaleStillActive",
+      "msg": "Presale is still active"
+    },
+    {
+      "code": 6033,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    },
+    {
+      "code": 6034,
+      "name": "PresaleNotFinalized",
+      "msg": "Presale not finalized yet"
+    },
+    {
+      "code": 6035,
+      "name": "AlreadyTransferred",
+      "msg": "Already transferred to vesting"
+    },
+    {
+      "code": 6036,
+      "name": "NothingToTransfer",
+      "msg": "Nothing to transfer"
+    },
+    {
+      "code": 6037,
+      "name": "PresaleNotEnded",
+      "msg": "Presale has not ended yet"
+    },
+    {
+      "code": 6038,
+      "name": "NoTokensToClaim",
+      "msg": "No tokens to claim"
+    },
+    {
+      "code": 6039,
+      "name": "AlreadyClaimedToVesting",
+      "msg": "Already claimed to vesting"
+    },
+    {
+      "code": 6040,
+      "name": "MustUnstakeFirst",
+      "msg": "Must unstake tokens first before claiming to vesting"
+    },
+    {
+      "code": 6041,
+      "name": "NoRewardsToClaim",
+      "msg": "No rewards to claim"
+    },
+    {
+      "code": 6042,
+      "name": "PurchaseBelowMinimum",
+      "msg": "Purchase amount below minimum (0.1 SOL)"
+    },
+    {
+      "code": 6043,
+      "name": "PurchaseExceedsMaximum",
+      "msg": "Purchase would exceed maximum per wallet (200,000 VIBES)"
+    },
+    {
+      "code": 6044,
+      "name": "WalletLimitReached",
+      "msg": "Wallet purchase limit reached"
+    },
+    {
+      "code": 6045,
+      "name": "InvalidPurchaseLimits",
+      "msg": "Invalid purchase limits configuration"
+    }
+  ],
+  "metadata": {
+    "address": "GEHYySidFB8XWXkPFBrnfgqEhoA8sGeMZooUouqZuP7S"
+  }
+}

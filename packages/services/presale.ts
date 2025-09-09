@@ -84,7 +84,7 @@ export class PresaleService {
    */
   getPresalePDA(): [PublicKey, number] {
     return PublicKey.findProgramAddressSync(
-      [Buffer.from('presale')],
+      [Buffer.from('presale_state')],
       PRESALE_PROGRAM_ID
     );
   }
@@ -94,7 +94,7 @@ export class PresaleService {
    */
   getBuyerPDA(buyer: PublicKey): [PublicKey, number] {
     return PublicKey.findProgramAddressSync(
-      [Buffer.from('buyer'), buyer.toBuffer()],
+      [Buffer.from('buyer_state'), buyer.toBuffer()],
       PRESALE_PROGRAM_ID
     );
   }

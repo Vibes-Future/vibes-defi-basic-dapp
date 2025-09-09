@@ -36,18 +36,8 @@ const ProductionPresaleCard: React.FC = () => {
   }, [connected]);
 
   const loadPresaleData = async () => {
-           if (DEMO_MODE) {
-       // Demo data
-       setPresaleData({
-         currentPrice: 0.0598,
-         solPrice: 185.5,
-         raisedSol: 15.5,
-         raisedUsdc: 2500,
-         totalRaisedUSD: 2847.5,
-         progress: 35.6
-       });
-       return;
-     }
+    // Always load real data - remove demo mode override
+    // DEMO_MODE is set to false by default in the Docker environment
 
     try {
       // Load real presale data
@@ -108,15 +98,16 @@ const ProductionPresaleCard: React.FC = () => {
     }
   };
 
-  // Get real SOL price from CoinGecko API
+  // Get real SOL price from internal API (avoids CORS issues)
   const getRealSolPrice = async (): Promise<number> => {
     try {
-      const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd');
+      const response = await fetch('/api/sol-price');
       const data = await response.json();
+      console.log('✅ SOL price fetched:', data.solana.usd);
       return data.solana.usd;
     } catch (error) {
       console.error('Error fetching SOL price:', error);
-      return 185.5; // Fallback price
+      return 200; // Fallback price
     }
   };
 
@@ -207,16 +198,8 @@ const ProductionPresaleCard: React.FC = () => {
 
     setLoading(true);
     try {
-      if (DEMO_MODE) {
-        // Simulate transaction
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        addNotification(showNotification.success(
-          'Transaction Successful!',
-          `You received ${calculateVibesAmount()} VIBES tokens`,
-          6000
-        ));
-      } else {
-        // Real transaction logic
+      // Always use real transaction logic
+      // Real transaction logic
         console.log('🚀 Initiating real purchase transaction...');
         
         if (!signTransaction) {
@@ -247,7 +230,6 @@ const ProductionPresaleCard: React.FC = () => {
         } else {
           throw new Error('Transaction failed - no signature returned');
         }
-      }
     } catch (error) {
       console.error('Purchase error:', error);
       addNotification(showNotification.error(
@@ -323,12 +305,7 @@ const ProductionPresaleCard: React.FC = () => {
                  <span className="stat-label">USDC Liquidity Pool</span>
                </div>
 
-              {DEMO_MODE && (
-                <div className="alert alert-warning">
-                  <span>⚠️</span>
-                  Demo mode active - transactions are simulated
-                </div>
-              )}
+              {/* Demo mode notice removed - always show real data */}
             </div>
           </div>
 

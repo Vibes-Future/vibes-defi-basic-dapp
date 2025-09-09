@@ -47,7 +47,10 @@ const ProductionWalletButton: React.FC = () => {
   if (!connected) {
     return (
       <button
-        onClick={() => setVisible(true)}
+        onClick={() => {
+          console.log('Opening wallet selection modal...');
+          setVisible(true);
+        }}
         disabled={connecting}
         className="wallet-connect-button"
       >

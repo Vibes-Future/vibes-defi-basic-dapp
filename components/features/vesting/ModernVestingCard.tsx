@@ -37,21 +37,27 @@ const ModernVestingCard: React.FC = () => {
   }, [connected]);
 
   const loadVestingData = async () => {
-    if (DEMO_MODE || !connected) {
-      // Demo data for UI showcase
+    console.log('🔄 VESTING: loadVestingData called');
+    console.log('🔄 VESTING: DEMO_MODE:', DEMO_MODE);
+    console.log('🔄 VESTING: connected:', connected);
+    console.log('🔄 VESTING: publicKeyObj:', publicKeyObj?.toString());
+    
+    if (!connected) {
+      console.log('🔄 VESTING: Wallet not connected, showing empty state');
+      // Empty state when not connected
       setVestingData({
-        totalLocked: 5000,
-        totalClaimed: 1250,
-        claimableNow: 416.67,
-        nextUnlock: new Date('2026-09-01T00:00:00.000Z'),
-        progressPercent: 25,
-        monthlyRelease: 416.67,
-        cliffEnded: true,
-        totalSchedules: 2,
-        immediateRelease: 2000,
+        totalLocked: 0,
+        totalClaimed: 0,
+        claimableNow: 0,
+        nextUnlock: new Date(),
+        progressPercent: 0,
+        monthlyRelease: 0,
+        cliffEnded: false,
+        totalSchedules: 0,
+        immediateRelease: 0,
         isAnticipated: false,
-        purchasedAmount: 3000,
-        estimatedRewards: 2000
+        purchasedAmount: 0,
+        estimatedRewards: 0
       });
       return;
     }
@@ -96,11 +102,21 @@ const ModernVestingCard: React.FC = () => {
       } else {
         // No vesting schedule found - Show anticipated vesting based on presale purchases
         try {
+          console.log('🔍 VESTING: No vesting schedule found, checking presale purchases...');
+          console.log('🔍 VESTING: User wallet:', publicKeyObj.toString());
+          
           const rpcConnection = new Connection(RPC_ENDPOINT);
           const presaleService = new PresaleService(rpcConnection);
+          console.log('🔍 VESTING: Created presale service, calling getBuyerState...');
           const buyerState = await presaleService.getBuyerState(publicKeyObj);
+          console.log('🔍 VESTING: getBuyerState result:', buyerState);
           
           if (buyerState && buyerState.totalPurchasedVibes > 0) {
+            console.log('🎉 VESTING: Found buyer state with purchases!');
+            console.log('🎉 VESTING: Total purchased:', buyerState.totalPurchasedVibes, 'VIBES');
+            console.log('🎉 VESTING: SOL contributed:', buyerState.solContributed, 'SOL');
+            console.log('🎉 VESTING: USDC contributed:', buyerState.usdcContributed, 'USDC');
+            
             // Calculate anticipated vesting amounts
             const totalPurchased = buyerState.totalPurchasedVibes;
             
@@ -124,7 +140,7 @@ const ModernVestingCard: React.FC = () => {
             const estimatedListingDate = new Date();
             estimatedListingDate.setMonth(estimatedListingDate.getMonth() + 2); // Assume 2 months from now
             
-            setVestingData({
+            const newVestingData = {
               totalLocked: totalForVesting, // Total that will be locked (purchased + rewards)
               totalClaimed: 0, // Nothing claimed yet
               claimableNow: 0, // Nothing claimable during presale
@@ -138,9 +154,13 @@ const ModernVestingCard: React.FC = () => {
               isAnticipated: true, // Flag to show this is anticipated data
               purchasedAmount: totalPurchased,
               estimatedRewards: totalAccumulatedRewards
-            });
+            };
+            
+            console.log('🔄 VESTING: Setting new vesting data:', newVestingData);
+            setVestingData(newVestingData);
           } else {
             // No presale purchases either
+            console.log('❌ VESTING: No buyer state found or totalPurchasedVibes is 0');
             setVestingData({
               totalLocked: 0,
               totalClaimed: 0,
@@ -198,27 +218,17 @@ const ModernVestingCard: React.FC = () => {
   const handleClaim = async () => {
     setLoading(true);
     try {
-      if (DEMO_MODE) {
-        // Demo simulation
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        setVestingData(prev => ({
-          ...prev,
-          totalClaimed: prev.totalClaimed + prev.claimableNow,
-          claimableNow: 0
-        }));
-      } else {
-        // Real claiming logic would require wallet signing integration
-        if (!publicKeyObj) throw new Error('Wallet not connected');
-        
-        // For now, just show that claiming is not yet implemented in production
-        console.log('Claiming functionality will be implemented when needed');
-        
-        // The transaction would need proper wallet integration for signing
-        // await vestingService.claim(publicKeyObj, signTransaction);
-        
-        // Reload data after claiming
-        await loadVestingData();
-      }
+      // Real claiming logic would require wallet signing integration
+      if (!publicKeyObj) throw new Error('Wallet not connected');
+      
+      // For now, just show that claiming is not yet implemented in production
+      console.log('Claiming functionality will be implemented when needed');
+      
+      // The transaction would need proper wallet integration for signing
+      // await vestingService.claim(publicKeyObj, signTransaction);
+      
+      // Reload data after claiming
+      await loadVestingData();
     } catch (error) {
       console.error('Claim error:', error);
     } finally {
@@ -231,18 +241,11 @@ const ModernVestingCard: React.FC = () => {
     
     setLoading(true);
     try {
-      if (DEMO_MODE) {
-        // Demo simulation
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        setVestingData(prev => ({
-          ...prev,
-          totalSchedules: prev.totalSchedules + 1
-        }));
-        setCreateAmount('');
-        setBeneficiaryAddress('');
-      } else {
-        // Real schedule creation logic would go here
-      }
+      // Real schedule creation logic would go here
+      // For now, just a placeholder since this is admin functionality
+      console.log('Schedule creation functionality needs implementation');
+      setCreateAmount('');
+      setBeneficiaryAddress('');
     } catch (error) {
       console.error('Create schedule error:', error);
     } finally {
@@ -281,6 +284,14 @@ const ModernVestingCard: React.FC = () => {
     });
   };
 
+  // Debug logging for render conditions
+  console.log('🖼️ VESTING RENDER: Checking render conditions:');
+  console.log('🖼️ VESTING RENDER: DEMO_MODE:', DEMO_MODE);
+  console.log('🖼️ VESTING RENDER: vestingData.isAnticipated:', vestingData.isAnticipated);
+  console.log('🖼️ VESTING RENDER: vestingData.purchasedAmount:', vestingData.purchasedAmount);
+  console.log('🖼️ VESTING RENDER: connected:', connected);
+  console.log('🖼️ VESTING RENDER: Current vestingData:', vestingData);
+
   return (
     <div className="max-w-2xl mx-auto">
       {/* Simplified Your Dashboard */}
@@ -294,7 +305,7 @@ const ModernVestingCard: React.FC = () => {
         </div>
         <div className="card-content">
           
-          {!DEMO_MODE && vestingData.isAnticipated && vestingData.purchasedAmount > 0 ? (
+          {vestingData.isAnticipated && vestingData.purchasedAmount > 0 ? (
             // Real data from presale
             <div className="vesting-dashboard">
               {/* Key Stats */}
@@ -304,7 +315,7 @@ const ModernVestingCard: React.FC = () => {
                     <span className="stat-icon">🛒</span>
                     <div>
                       <div className="stat-label">Presale Purchases</div>
-                      <div className="stat-value">{formatNumber(vestingData.purchasedAmount, 0)} VIBES</div>
+                      <div className="stat-value">{formatNumber(vestingData.purchasedAmount, 3)} VIBES</div>
                     </div>
                   </div>
                 </div>
@@ -314,7 +325,7 @@ const ModernVestingCard: React.FC = () => {
                     <span className="stat-icon">⚡</span>
                     <div>
                       <div className="stat-label">Staking Rewards Earned</div>
-                      <div className="stat-value text-green-400">{formatNumber(vestingData.estimatedRewards, 0)} VIBES</div>
+                      <div className="stat-value text-green-400">{formatNumber(vestingData.estimatedRewards, 3)} VIBES</div>
                     </div>
                   </div>
                 </div>
@@ -328,7 +339,7 @@ const ModernVestingCard: React.FC = () => {
                   <div className="withdrawal-percent">40%</div>
                   <div className="withdrawal-details">
                     <div className="withdrawal-label">First Withdrawal</div>
-                    <div className="withdrawal-amount">{formatNumber(vestingData.immediateRelease, 0)} VIBES</div>
+                    <div className="withdrawal-amount">{formatNumber(vestingData.immediateRelease, 2)} VIBES</div>
                     <div className="withdrawal-when">Available at token listing</div>
                   </div>
                 </div>
@@ -337,7 +348,7 @@ const ModernVestingCard: React.FC = () => {
                   <div className="withdrawal-percent">60%</div>
                   <div className="withdrawal-details">
                     <div className="withdrawal-label">Monthly Withdrawals</div>
-                    <div className="withdrawal-amount">{formatNumber(vestingData.monthlyRelease, 0)} VIBES/month</div>
+                    <div className="withdrawal-amount">{formatNumber(vestingData.monthlyRelease, 2)} VIBES/month</div>
                     <div className="withdrawal-when">12 monthly releases after listing</div>
                   </div>
                 </div>
@@ -345,26 +356,25 @@ const ModernVestingCard: React.FC = () => {
 
 
             </div>
-          ) : !DEMO_MODE ? (
-            // No presale activity
-            <div className="empty-state">
-              <div className="empty-icon">📦</div>
-              <h4 className="empty-title">No Presale Activity</h4>
-              <p className="empty-message">Purchase tokens during presale to see your vesting schedule here.</p>
-            </div>
           ) : (
-            // Demo mode
-            <div className="demo-notice">
-              <span className="demo-badge">DEMO</span>
-              <span>Connect wallet to see real vesting data</span>
-            </div>
+            // No presale activity
+            (() => {
+              console.log('🖼️ VESTING RENDER: Showing "No Presale Activity" state');
+              return (
+                <div className="empty-state">
+                  <div className="empty-icon">📦</div>
+                  <h4 className="empty-title">No Presale Activity</h4>
+                  <p className="empty-message">Purchase tokens during presale to see your vesting schedule here.</p>
+                </div>
+              );
+            })()
           )}
 
         </div>
       </div>
 
-      {/* Claimable Tokens - Only shown in demo mode */}
-      {DEMO_MODE && (
+      {/* Claimable Tokens - Remove demo mode restriction for testing */}
+      {false && (
         <div className="production-card">
         <div className="card-header">
           <div className="card-icon">💎</div>
@@ -419,7 +429,7 @@ const ModernVestingCard: React.FC = () => {
       )}
 
       {/* Vesting Management - Hidden during presale */}
-      {DEMO_MODE && (
+      {false && (
         <div className="lg:col-span-2 xl:col-span-1 production-card">
         <div className="card-header">
           <div className="card-icon">⚙️</div>

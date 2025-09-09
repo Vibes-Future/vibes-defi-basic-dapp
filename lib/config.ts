@@ -7,20 +7,20 @@ export const RPC_ENDPOINT = process.env.NEXT_PUBLIC_RPC_ENDPOINT ||
   'https://devnet.helius-rpc.com/?api-key=your-api-key';
 
 // String constants for program IDs (converted to PublicKey when needed)
-// Updated with deployed devnet addresses from keypairs.json
+// Updated with deployed devnet addresses from Docker environment
 export const PRESALE_PROGRAM_ID_STRING = 
-  process.env.NEXT_PUBLIC_PRESALE_PROGRAM_ID || '6Bofmx11CpBEy6iXqGs68HVHaZHw9Y3U1TYRYUhRA2wk';
+  process.env.NEXT_PUBLIC_PRESALE_PROGRAM_ID || 'GEHYySidFB8XWXkPFBrnfgqEhoA8sGeMZooUouqZuP7S';
 export const VESTING_PROGRAM_ID_STRING = 
-  process.env.NEXT_PUBLIC_VESTING_PROGRAM_ID || 'HXiAcHVkxdpAkeyFtu47mRkcEF3AxjqmGV7kfcunnaLY';
+  process.env.NEXT_PUBLIC_VESTING_PROGRAM_ID || '37QayjEeVsvBJfoUwgpWCLyon5zbMyPqg4iLDLzjwYyk';
 export const STAKING_PROGRAM_ID_STRING = 
-  process.env.NEXT_PUBLIC_STAKING_PROGRAM_ID || 'HNQ66x9jd7tdghh4KyeyJbtEqBC7NDw1CyU5fiERS6DW';
+  process.env.NEXT_PUBLIC_STAKING_PROGRAM_ID || 'FPhhnGDDLECMQYzcZrxqq5GKCcECmhuLeEepy3mCE5TX';
 
 // Token mint address strings
-// Updated with deployed devnet addresses from keypairs.json
+// Updated with deployed devnet addresses from Docker environment
 export const VIBES_MINT_STRING = 
-  process.env.NEXT_PUBLIC_VIBES_MINT || '84LT3VSyUEoyyt4u3D4No2fCfHnMdh7noyG2qd8FiQbo';
+  process.env.NEXT_PUBLIC_VIBES_MINT || '3PpEoHtqRBTvWopXp37m3TUid3fPhTMhC8fid82xHPY6';
 export const USDC_MINT_STRING = 
-  process.env.NEXT_PUBLIC_USDC_MINT || '3HUzJfpyyFS4XodTRPFkGqjjGo7MHhQqJMwFu1HMkuUe';
+  process.env.NEXT_PUBLIC_USDC_MINT || 'ANzKJEL57EUNiqkeWExXoMEG78AN5kcxB4c1hUshNJmy';
 
 // Helper functions to create PublicKeys safely (only on client side)
 export const getPresaleProgramId = () => new PublicKey(PRESALE_PROGRAM_ID_STRING);
@@ -72,8 +72,8 @@ export const USDC_MINT = new Proxy({} as PublicKey, {
   }
 });
 
-// Demo mode flag - removed from UI but kept for backwards compatibility
-export const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || false;
+// Demo mode flag - disabled for production use with real contracts
+export const DEMO_MODE = false;
 
 // Common constants
 export const LAMPORTS_PER_SOL = 1000000000;

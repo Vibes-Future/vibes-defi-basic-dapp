@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { ProductionHeader } from '@/components/layout';
 import { ProductionHero } from '@/components/layout';
-import { ProductionPresaleCard } from '@/components/features/presale';
+import { ProductionPresaleCard, PresaleStakingOption } from '@/components/features/presale';
 import { ModernVestingCard } from '@/components/features/vesting';
 
 // Import styles
@@ -43,7 +43,25 @@ export default function Home() {
         {/* Presale Section */}
         <ProductionPresaleCard />
         
-
+        {/* Presale Staking Section */}
+        <section id="presale-staking" className="section-spacing">
+          <div className="container-spacing">
+            <div className="text-center mb-16">
+              <h2 className="heading-xl text-gradient mb-8">
+                🥩 Presale Staking
+              </h2>
+              <p className="body-lg text-gray-300 max-w-3xl mx-auto mb-16">
+                Stake your purchased VIBES tokens to earn rewards during the presale period. 
+                Choose how many of your tokens to put in staking and start earning immediately.
+              </p>
+            </div>
+            <PresaleStakingOption 
+              onStakingComplete={(amount) => {
+                console.log(`User staked ${amount} VIBES`);
+              }}
+            />
+          </div>
+        </section>
         
         {/* Vesting Section */}
         <section id="vesting" className="section-spacing">

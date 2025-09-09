@@ -9,7 +9,7 @@ services:
         NEXT_PUBLIC_HELIUS_RPC_ENDPOINT: https://devnet.helius-rpc.com/?api-key=10bdc822-0b46-4952-98fc-095c326565d7
         NEXT_PUBLIC_VIBES_MINT: 3PpEoHtqRBTvWopXp37m3TUid3fPhTMhC8fid82xHPY6
         NEXT_PUBLIC_VIBES_DECIMALS: 6
-        NEXT_PUBLIC_USDC_MINT: ANzKJEL57EUNiqkeWExXoMEG78AN5kcxB4c1hUshNJmy
+        NEXT_PUBLIC_USDC_MINT: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
         NEXT_PUBLIC_PRESALE_PROGRAM_ID: GEHYySidFB8XWXkPFBrnfgqEhoA8sGeMZooUouqZuP7S
         NEXT_PUBLIC_STAKING_PROGRAM_ID: FPhhnGDDLECMQYzcZrxqq5GKCcECmhuLeEepy3mCE5TX
         NEXT_PUBLIC_VESTING_PROGRAM_ID: 37QayjEeVsvBJfoUwgpWCLyon5zbMyPqg4iLDLzjwYyk
@@ -26,7 +26,6 @@ services:
       - NEXT_PUBLIC_PRESALE_PROGRAM_ID=GEHYySidFB8XWXkPFBrnfgqEhoA8sGeMZooUouqZuP7S
       - NEXT_PUBLIC_STAKING_PROGRAM_ID=FPhhnGDDLECMQYzcZrxqq5GKCcECmhuLeEepy3mCE5TX
       - NEXT_PUBLIC_VESTING_PROGRAM_ID=37QayjEeVsvBJfoUwgpWCLyon5zbMyPqg4iLDLzjwYyk
-      - NEXT_PUBLIC_DEMO_MODE=false
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 30s

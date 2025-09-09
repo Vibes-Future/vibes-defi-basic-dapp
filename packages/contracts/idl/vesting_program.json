@@ -1,0 +1,365 @@
+{
+  "version": "0.1.0",
+  "name": "vesting_program",
+  "instructions": [
+    {
+      "name": "createSchedule",
+      "docs": [
+        "Create a vesting schedule for a beneficiary"
+      ],
+      "accounts": [
+        {
+          "name": "vestingSchedule",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMint",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "VIBES token mint"
+          ]
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true,
+          "docs": [
+            "Authority that can create vesting schedules"
+          ]
+        },
+        {
+          "name": "beneficiary",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Beneficiary of the vesting schedule"
+          ]
+        },
+        {
+          "name": "vaultTokenAccountPda",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Vault token account PDA for storing vested tokens"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "total",
+          "type": "u64"
+        },
+        {
+          "name": "presaleEndTs",
+          "type": "i64"
+        },
+        {
+          "name": "hadStaking",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "claim",
+      "docs": [
+        "Claim vested tokens"
+      ],
+      "accounts": [
+        {
+          "name": "vestingSchedule",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "beneficiary",
+          "isMut": true,
+          "isSigner": true,
+          "docs": [
+            "Beneficiary claiming tokens"
+          ]
+        },
+        {
+          "name": "vaultTokenAccountPda",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Vault token account PDA"
+          ]
+        },
+        {
+          "name": "beneficiaryVibesAccount",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Beneficiary's VIBES token account"
+          ]
+        },
+        {
+          "name": "tokenMint",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "VIBES token mint"
+          ]
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cancel",
+      "docs": [
+        "Cancel vesting schedule (optional, disabled by default)"
+      ],
+      "accounts": [
+        {
+          "name": "vestingSchedule",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "beneficiary",
+          "isMut": false,
+          "isSigner": true,
+          "docs": [
+            "Beneficiary cancelling the vesting"
+          ]
+        },
+        {
+          "name": "vaultTokenAccountPda",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Vault token account PDA"
+          ]
+        },
+        {
+          "name": "beneficiaryVibesAccount",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Beneficiary's VIBES token account"
+          ]
+        },
+        {
+          "name": "tokenMint",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "VIBES token mint"
+          ]
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "VestingSchedule",
+      "docs": [
+        "Vesting schedule for a beneficiary"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "beneficiary",
+            "docs": [
+              "Beneficiary of the vesting schedule"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "tokenMint",
+            "docs": [
+              "VIBES token mint"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "total",
+            "docs": [
+              "Total tokens to be vested"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "released",
+            "docs": [
+              "Tokens already released"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "hadStaking",
+            "docs": [
+              "Whether user had staking during presale"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "presaleEndTs",
+            "docs": [
+              "When presale ended"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "vestingStartTs",
+            "docs": [
+              "When vesting becomes available (presale_end + 0 or 3 months)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "cliff1",
+            "docs": [
+              "First cliff (+30 days from vesting start, 20% vested)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "cliff2",
+            "docs": [
+              "Second cliff (+60 days from vesting start, 20% vested)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "cliff3",
+            "docs": [
+              "Third cliff (+90 days from vesting start, 20% vested)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "cliff4",
+            "docs": [
+              "Fourth cliff (+120 days from vesting start, 20% vested)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "vaultTokenAccountPda",
+            "docs": [
+              "Vault token account PDA"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for PDA derivation"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "isCancelled",
+            "docs": [
+              "Whether vesting is cancelled"
+            ],
+            "type": "bool"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidTotal",
+      "msg": "Invalid total amount"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidListingTime",
+      "msg": "Invalid listing time"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidPresaleEndTime",
+      "msg": "Invalid presale end time"
+    },
+    {
+      "code": 6003,
+      "name": "NoTokensToClaim",
+      "msg": "No tokens to claim"
+    },
+    {
+      "code": 6004,
+      "name": "Overflow",
+      "msg": "Overflow occurred"
+    },
+    {
+      "code": 6005,
+      "name": "AlreadyCancelled",
+      "msg": "Vesting already cancelled"
+    },
+    {
+      "code": 6006,
+      "name": "Unauthorized",
+      "msg": "Unauthorized access"
+    },
+    {
+      "code": 6007,
+      "name": "InvalidMint",
+      "msg": "Invalid mint"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidTokenAccount",
+      "msg": "Invalid token account"
+    },
+    {
+      "code": 6009,
+      "name": "VestingNotActive",
+      "msg": "Vesting not active"
+    },
+    {
+      "code": 6010,
+      "name": "NoPendingUpgrade",
+      "msg": "No pending upgrade"
+    },
+    {
+      "code": 6011,
+      "name": "UpgradeDelayNotPassed",
+      "msg": "Upgrade delay not passed"
+    },
+    {
+      "code": 6012,
+      "name": "InvalidUpgradeAuthority",
+      "msg": "Invalid upgrade authority"
+    },
+    {
+      "code": 6013,
+      "name": "UpgradeAlreadyPending",
+      "msg": "Upgrade already pending"
+    }
+  ]
+}
