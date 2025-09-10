@@ -35,6 +35,7 @@ export const useWallet = () => {
         solBalance: 0,
         vibesBalance: 0,
         usdcBalance: 0,
+        loading: false,
       }));
       return;
     }
@@ -42,37 +43,23 @@ export const useWallet = () => {
     setWalletState(prev => ({ ...prev, loading: true }));
 
     try {
-      // Update SOL balance first (most reliable)
-      const solBalance = await getSolBalance(publicKey);
-      
-      // Update state with SOL balance immediately
+      // Get all balances in parallel with proper error handling
+      const [solBalance, vibesBalance, usdcBalance] = await Promise.allSettled([
+        getSolBalance(publicKey),
+        VIBES_MINT ? getTokenBalance(VIBES_MINT, publicKey).catch(() => 0) : Promise.resolve(0),
+        USDC_MINT ? getTokenBalance(USDC_MINT, publicKey).catch(() => 0) : Promise.resolve(0),
+      ]);
+
+      // Update all state at once to minimize re-renders
       setWalletState(prev => ({
         ...prev,
         connected,
         publicKey: publicKey.toString(),
-        solBalance,
+        solBalance: solBalance.status === 'fulfilled' ? solBalance.value : 0,
+        vibesBalance: vibesBalance.status === 'fulfilled' ? vibesBalance.value : 0,
+        usdcBalance: usdcBalance.status === 'fulfilled' ? usdcBalance.value : 0,
         loading: false,
       }));
-
-      // Try to get token balances with delay to avoid rate limiting
-      if (VIBES_MINT || USDC_MINT) {
-        setTimeout(async () => {
-          try {
-            const [vibesBalance, usdcBalance] = await Promise.all([
-              VIBES_MINT ? getTokenBalance(VIBES_MINT, publicKey) : Promise.resolve(0),
-              USDC_MINT ? getTokenBalance(USDC_MINT, publicKey) : Promise.resolve(0),
-            ]);
-
-            setWalletState(prev => ({
-              ...prev,
-              vibesBalance,
-              usdcBalance,
-            }));
-                  } catch {
-          console.log('Could not fetch token balances - this is normal if tokens don\'t exist yet');
-        }
-        }, 1000); // 1 second delay
-      }
     } catch (error) {
       console.error('Error updating balances:', error);
       setWalletState(prev => ({ ...prev, loading: false }));
@@ -80,13 +67,26 @@ export const useWallet = () => {
   };
 
   useEffect(() => {
-    // Debounce balance updates to avoid too many calls
-    const timeoutId = setTimeout(() => {
-      updateBalances();
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [publicKey, connected]);
+    // Only update balances when connection state changes meaningfully
+    if (connected && publicKey) {
+      const timeoutId = setTimeout(() => {
+        updateBalances();
+      }, 100); // Reduced delay for better UX
+      
+      return () => clearTimeout(timeoutId);
+    } else if (!connected) {
+      // Clear state immediately when disconnected
+      setWalletState(prev => ({
+        ...prev,
+        connected: false,
+        publicKey: null,
+        solBalance: 0,
+        vibesBalance: 0,
+        usdcBalance: 0,
+        loading: false,
+      }));
+    }
+  }, [connected, publicKey?.toString()]); // Use string comparison to avoid object reference issues
 
   return {
     ...walletState,

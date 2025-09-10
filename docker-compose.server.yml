@@ -6,9 +6,11 @@ services:
       context: .
       dockerfile: Dockerfile.server
       args:
-        # Production environment variables for Devnet
+        # Production environment variables - UPDATED WITH CORRECT DEPLOYED VALUES
         NEXT_PUBLIC_SOLANA_NETWORK: devnet
+        NEXT_PUBLIC_HELIUS_API_KEY: 10bdc822-0b46-4952-98fc-095c326565d7
         NEXT_PUBLIC_HELIUS_RPC_ENDPOINT: https://devnet.helius-rpc.com/?api-key=10bdc822-0b46-4952-98fc-095c326565d7
+        NEXT_PUBLIC_RPC_ENDPOINT: https://devnet.helius-rpc.com/?api-key=10bdc822-0b46-4952-98fc-095c326565d7
         NEXT_PUBLIC_VIBES_MINT: 3PpEoHtqRBTvWopXp37m3TUid3fPhTMhC8fid82xHPY6
         NEXT_PUBLIC_VIBES_DECIMALS: 6
         NEXT_PUBLIC_USDC_MINT: ANzKJEL57EUNiqkeWExXoMEG78AN5kcxB4c1hUshNJmy
@@ -17,6 +19,15 @@ services:
         NEXT_PUBLIC_VESTING_PROGRAM_ID: 37QayjEeVsvBJfoUwgpWCLyon5zbMyPqg4iLDLzjwYyk
         NEXT_PUBLIC_DEMO_MODE: false
         NEXT_PUBLIC_APP_ENV: production
+        # Additional presale configuration
+        NEXT_PUBLIC_PRESALE_START_TIME: 1757327751
+        NEXT_PUBLIC_PRESALE_END_TIME: 1757414151
+        NEXT_PUBLIC_PRESALE_HARD_CAP: 1000000000000
+        NEXT_PUBLIC_MAX_PURCHASE_PER_WALLET: 200000000000
+        NEXT_PUBLIC_MIN_SOL_PURCHASE: 100000000
+        NEXT_PUBLIC_FEE_RATE_BPS: 50
+        NEXT_PUBLIC_PRESALE_STATE_PDA: Dm1jHr8fqFfEtyf1FNcWNxyReDKMfjNNZSYK6GKuoPkB
+        NEXT_PUBLIC_TEST_WALLET_ADDRESS: G7rqMtfbA85ViexHNSCRky4RBSPu8McQyHeCHcLCYEzj
     ports:
       - "3002:3000"  # External port 3002 maps to container port 3000
     environment:
@@ -24,6 +35,7 @@ services:
       - NEXT_PUBLIC_SOLANA_NETWORK=devnet
       - NEXT_PUBLIC_APP_ENV=production
       - NEXT_PUBLIC_DEMO_MODE=false
+      - NEXT_TELEMETRY_DISABLED=1
     restart: unless-stopped
     container_name: vibes-defi-production
     healthcheck:

@@ -6,6 +6,7 @@ import { useWallet } from '@/hooks/useWallet';
 import { PresaleService } from '@/services/presale-simple';
 import { DEMO_MODE, RPC_ENDPOINT } from '@/lib/config';
 import { useNotifications, showNotification } from '@/components/ui/NotificationSystem';
+import { priceService, type PriceData } from '@/lib/priceService';
 import PriceCalendar from './PriceCalendar';
 
 const ProductionPresaleCard: React.FC = () => {
@@ -27,10 +28,11 @@ const ProductionPresaleCard: React.FC = () => {
   useEffect(() => {
     loadPresaleData();
     
-    // Auto-refresh every 30 seconds for real-time data
+    // Optimized refresh interval - less frequent to avoid rate limiting
+    // Price data is cached for 2 minutes on the server side
     const interval = setInterval(() => {
       loadPresaleData();
-    }, 30000);
+    }, 120000); // 2 minutes to align with server cache
     
     return () => clearInterval(interval);
   }, [connected]);
@@ -98,16 +100,23 @@ const ProductionPresaleCard: React.FC = () => {
     }
   };
 
-  // Get real SOL price from internal API (avoids CORS issues)
+  // Get real SOL price using professional price service
   const getRealSolPrice = async (): Promise<number> => {
     try {
-      const response = await fetch('/api/sol-price');
-      const data = await response.json();
-      console.log('✅ SOL price fetched:', data.solana.usd);
-      return data.solana.usd;
+      const priceData: PriceData = await priceService.getSolPrice();
+      
+      // Enhanced logging with full metadata
+      console.log('💰 SOL price fetched:', {
+        price: priceData.price,
+        source: priceData.source,
+        cached: priceData.cached,
+        timestamp: priceData.timestamp
+      });
+      
+      return priceData.price;
     } catch (error) {
-      console.error('Error fetching SOL price:', error);
-      return 200; // Fallback price
+      console.error('Error fetching SOL price via price service:', error);
+      return 180; // Fallback price
     }
   };
 

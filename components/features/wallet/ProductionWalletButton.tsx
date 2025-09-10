@@ -5,23 +5,13 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 
 const ProductionWalletButton: React.FC = () => {
-  const { publicKey, connected, connecting, disconnect, wallet, connect } = useWallet();
-  const { setVisible } = useWalletModal();
-
-  // Debug wallet state changes
-  useEffect(() => {
-    console.log('🔄 WALLET STATE CHANGE:', {
-      connected,
-      connecting,
-      publicKey: publicKey?.toString(),
-      walletName: wallet?.adapter?.name
-    });
-  }, [connected, connecting, publicKey, wallet]);
+  const { publicKey, connected, connecting, disconnect, wallet, connect, select, wallets } = useWallet();
+  const { setVisible, visible } = useWalletModal();
   const [showDropdown, setShowDropdown] = useState(false);
   const [copied, setCopied] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside - optimized with useCallback
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -29,9 +19,11 @@ const ProductionWalletButton: React.FC = () => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showDropdown]);
 
   const handleCopyAddress = async () => {
     if (publicKey) {
@@ -45,9 +37,17 @@ const ProductionWalletButton: React.FC = () => {
     }
   };
 
-  const handleDisconnect = () => {
-    disconnect();
-    setShowDropdown(false);
+  const handleDisconnect = async () => {
+    try {
+      await disconnect();
+      setShowDropdown(false);
+    } catch (error) {
+      console.error('Disconnect error:', error);
+    }
+  };
+
+  const handleWalletSelect = () => {
+    setVisible(true);
   };
 
   const formatAddress = (address: string) => {
@@ -57,12 +57,7 @@ const ProductionWalletButton: React.FC = () => {
   if (!connected) {
     return (
       <button
-        onClick={() => {
-          console.log('🔴 Opening wallet selection modal...');
-          console.log('🔴 Current wallet:', wallet?.adapter?.name);
-          console.log('🔴 Current state:', { connected, connecting });
-          setVisible(true);
-        }}
+        onClick={handleWalletSelect}
         disabled={connecting}
         className="wallet-connect-button"
       >
@@ -163,7 +158,7 @@ const ProductionWalletButton: React.FC = () => {
           </button>
 
           <button
-            onClick={() => setVisible(true)}
+            onClick={handleWalletSelect}
             className="wallet-dropdown-item"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
