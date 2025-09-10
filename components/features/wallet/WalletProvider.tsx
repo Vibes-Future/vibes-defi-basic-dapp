@@ -7,7 +7,7 @@ import {
 } from '@solana/wallet-adapter-react';
 
 import {
-  PhantomWalletAdapter,
+  // PhantomWalletAdapter, // Removed - Phantom auto-registers as Standard Wallet
   SolflareWalletAdapter,
   TorusWalletAdapter,
   LedgerWalletAdapter,
@@ -29,7 +29,7 @@ const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
   const wallets = useMemo(
     () => [
       // Popular Solana wallets in order of popularity
-      new PhantomWalletAdapter(),
+      // PhantomWalletAdapter removed - Phantom auto-registers as Standard Wallet
       new SolflareWalletAdapter(),
       new TorusWalletAdapter(),
       new LedgerWalletAdapter(),
@@ -41,12 +41,13 @@ const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
     <ConnectionProvider endpoint={endpoint}>
       <BaseWalletProvider 
         wallets={wallets} 
-        autoConnect={true}
+        autoConnect={false} // Changed to false to avoid auto-connect conflicts
         onError={(error) => {
-          // Suppress common wallet extension errors
+          // Suppress common wallet extension errors and Phantom Standard Wallet warnings
           if (error.message.includes('message channel closed') || 
-              error.message.includes('listener indicated an asynchronous response')) {
-            console.log('Wallet extension communication error (safe to ignore):', error.message);
+              error.message.includes('listener indicated an asynchronous response') ||
+              error.message.includes('Phantom was registered as a Standard Wallet')) {
+            console.log('Wallet extension communication info (safe to ignore):', error.message);
             return;
           }
           // Log other wallet errors for debugging
