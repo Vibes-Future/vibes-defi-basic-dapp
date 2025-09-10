@@ -47,11 +47,11 @@ const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
           if (error.message.includes('message channel closed') || 
               error.message.includes('listener indicated an asynchronous response') ||
               error.message.includes('Phantom was registered as a Standard Wallet')) {
-            console.log('Wallet extension communication info (safe to ignore):', error.message);
+            console.log('🔔 Wallet info (safe to ignore):', error.message);
             return;
           }
           // Log other wallet errors for debugging
-          console.error('Wallet connection error:', error);
+          console.error('❌ WALLET ERROR:', error);
           console.error('Error details:', {
             name: error.name,
             message: error.message,

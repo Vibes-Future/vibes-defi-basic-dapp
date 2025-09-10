@@ -5,8 +5,18 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 
 const ProductionWalletButton: React.FC = () => {
-  const { publicKey, connected, connecting, disconnect, wallet } = useWallet();
+  const { publicKey, connected, connecting, disconnect, wallet, connect } = useWallet();
   const { setVisible } = useWalletModal();
+
+  // Debug wallet state changes
+  useEffect(() => {
+    console.log('🔄 WALLET STATE CHANGE:', {
+      connected,
+      connecting,
+      publicKey: publicKey?.toString(),
+      walletName: wallet?.adapter?.name
+    });
+  }, [connected, connecting, publicKey, wallet]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [copied, setCopied] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -48,7 +58,9 @@ const ProductionWalletButton: React.FC = () => {
     return (
       <button
         onClick={() => {
-          console.log('Opening wallet selection modal...');
+          console.log('🔴 Opening wallet selection modal...');
+          console.log('🔴 Current wallet:', wallet?.adapter?.name);
+          console.log('🔴 Current state:', { connected, connecting });
           setVisible(true);
         }}
         disabled={connecting}
