@@ -8,8 +8,8 @@ RUN apk add --no-cache curl
 FROM base AS deps
 WORKDIR /app
 
-# Install build dependencies for native modules
-RUN apk add --no-cache libc6-compat python3 make g++
+# Install build dependencies for native modules (including Linux headers for USB support)
+RUN apk add --no-cache libc6-compat python3 make g++ linux-headers eudev-dev
 
 # Copy package files
 COPY package*.json ./
@@ -19,8 +19,8 @@ RUN npm ci --only=production && npm cache clean --force
 FROM base AS builder
 WORKDIR /app
 
-# Install build dependencies for native modules
-RUN apk add --no-cache libc6-compat python3 make g++
+# Install build dependencies for native modules (including Linux headers for USB support)
+RUN apk add --no-cache libc6-compat python3 make g++ linux-headers eudev-dev
 
 # Copy dependencies and source code
 COPY --from=deps /app/node_modules ./node_modules
@@ -94,3 +94,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
 
 # Start the application
 CMD ["node", "server.js"]
+
